@@ -6,6 +6,7 @@ import ContactsIcon from "@mui/icons-material/Contacts";
 import HomeIcon from "@mui/icons-material/Home";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import ViewListIcon from "@mui/icons-material/ViewList";
+import { Link } from "react-router-dom";
 
 function BottomNav() {
   const [value, setValue] = React.useState("recents");
@@ -35,30 +36,40 @@ function BottomNav() {
           value="account"
           icon={<AccountCircleIcon />}
           sx={{ minWidth: 0 }}
+          component={Link}
+          to="/account"
         />
         <BottomNavigationAction
           label="●"
           value="contacts"
           icon={<ContactsIcon />}
           sx={{ minWidth: 0 }}
+          component={Link}
+          to="/contacts"
         />
         <BottomNavigationAction
           label="●"
           value="calculator"
           icon={<CalculateIcon />}
           sx={{ minWidth: 0 }}
+          component={Link}
+          to="/calculator"
         />
         <BottomNavigationAction
           label="●"
-          value="list"
+          value="search"
           icon={<ViewListIcon />}
           sx={{ minWidth: 0 }}
+          component={Link}
+          to="/search"
         />
         <BottomNavigationAction
           label="●"
           value="home"
           icon={<HomeIcon />}
           sx={{ minWidth: 0 }}
+          component={Link}
+          to="/home"
         />
       </BottomNavigation>
     </div>
