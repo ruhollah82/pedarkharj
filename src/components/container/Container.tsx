@@ -8,20 +8,20 @@ interface ContainerProps {
 
 const Container: React.FC<ContainerProps> = ({
   children,
-  className,
   style,
+  className,
 }) => {
   const defaultStyle: React.CSSProperties = {
     display: "flex",
     flexDirection: "column",
-    height: "100%",
+    height: "100",
     overflow: "hidden",
   };
 
   const combinedStyle: React.CSSProperties = { ...defaultStyle, ...style };
 
   return (
-    <div className={className} style={combinedStyle}>
+    <div style={combinedStyle} className={className}>
       {children}
     </div>
   );

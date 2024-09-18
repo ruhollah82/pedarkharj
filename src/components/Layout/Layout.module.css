@@ -1,0 +1,11 @@
+.maincontainer {
+  flex-direction: column;
+  height: 100vh;
+}
+
+@media only screen and (max-width: 560px) {
+  .maincontainer {
+    height: 100%;
+    width: 100vw;
+  }
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import Navigation from "../Navigation/Navigation";
 import Container from "../container/Container";
-
+import styles from "./Layout.module.css";
 
 interface Ilayout {
   children?: React.ReactNode;
@@ -9,7 +9,7 @@ interface Ilayout {
 
 function Layout({ children }: Ilayout) {
   return (
-    <Container style={{ height: "100vh", flexDirection: "column" }}>
+    <Container className={styles.maincontainer}>
       <Container
         style={{
           flex: "1",
@@ -17,7 +17,6 @@ function Layout({ children }: Ilayout) {
           backgroundColor: "RGBA(225,225,225,0.5)",
         }}
       >
-        
         {children}
       </Container>
       <Navigation />
