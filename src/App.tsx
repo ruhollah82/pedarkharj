@@ -9,19 +9,27 @@ import Contacts from "./components/pages/contacts/Contacts";
 import Account from "./components/pages/account/Account";
 import Calculator from "./components/pages/claculator/Calculator";
 import Search from "./components/pages/serach/Search";
+import LoginPage from "./components/pages/login/Login";
 
 function App() {
+  var isLogedin = true;
   return (
     <ThemeProvider theme={theme}>
-      <Layout>
+      {isLogedin ? (
+        <Layout>
+          <Routes>
+            <Route path="/app/home" element={<Home />} />
+            <Route path="/app/contacts" element={<Contacts />} />
+            <Route path="/app/account" element={<Account />} />
+            <Route path="/app/calculator" element={<Calculator />} />
+            <Route path="/app/search" element={<Search />} />
+          </Routes>
+        </Layout>
+      ) : (
         <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/contacts" element={<Contacts />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/calculator" element={<Calculator />} />
-          <Route path="/search" element={<Search />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
-      </Layout>
+      )}
     </ThemeProvider>
   );
 }

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 html,
 body {
   margin: 0;
@@ -10,11 +9,11 @@ body {
 }
 
 body {
-  background-color: #0968e5;
   max-width: 550px;
   min-width: 300px;
   margin-left: auto;
   margin-right: auto;
+  background-color: rgb(79, 195, 247);
 }
 
 @media only screen and (max-width: 560px) {

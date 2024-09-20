@@ -1,7 +1,7 @@
 import React from "react";
 
 interface ContainerProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -14,7 +14,6 @@ const Container: React.FC<ContainerProps> = ({
   const defaultStyle: React.CSSProperties = {
     display: "flex",
     flexDirection: "column",
-    height: "100",
     overflow: "hidden",
   };
 

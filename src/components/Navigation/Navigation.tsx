@@ -16,13 +16,24 @@ function BottomNav() {
   };
 
   return (
-    <div style={{ backgroundColor: "RGBA(225,225,225,0.5)" }}>
+    <div
+      style={{
+        backgroundColor: "RGBA(225,225,225,0.5)",
+        display: "flex",
+        position: "fixed",
+        bottom: "0",
+        right: "0",
+        left: "0",
+        justifyContent: "center",
+      }}
+    >
       <BottomNavigation
         sx={{
-          width: "100%",
           minWidth: "300px",
-          borderTopLeftRadius: "16px",
-          borderTopRightRadius: "16px",
+          maxWidth: "550px",
+          width: "100%",
+          borderTopLeftRadius: "15px",
+          borderTopRightRadius: "15px",
           overflow: "hidden",
           display: "flex",
           justifyContent: "space-between",
@@ -32,44 +43,44 @@ function BottomNav() {
         onChange={handleChange}
       >
         <BottomNavigationAction
-          label="●"
+          label=""
           value="account"
           icon={<AccountCircleIcon />}
           sx={{ minWidth: 0 }}
           component={Link}
-          to="/account"
+          to="/app/account"
         />
         <BottomNavigationAction
-          label="●"
+          label=""
           value="contacts"
           icon={<ContactsIcon />}
           sx={{ minWidth: 0 }}
           component={Link}
-          to="/contacts"
+          to="/app/contacts"
         />
         <BottomNavigationAction
-          label="●"
+          label=""
           value="calculator"
           icon={<CalculateIcon />}
           sx={{ minWidth: 0 }}
           component={Link}
-          to="/calculator"
+          to="/app/calculator"
         />
         <BottomNavigationAction
-          label="●"
+          label=""
           value="search"
           icon={<ViewListIcon />}
           sx={{ minWidth: 0 }}
           component={Link}
-          to="/search"
+          to="/app/search"
         />
         <BottomNavigationAction
-          label="●"
+          label=""
           value="home"
           icon={<HomeIcon />}
           sx={{ minWidth: 0 }}
           component={Link}
-          to="/home"
+          to="/app/home"
         />
       </BottomNavigation>
     </div>
