@@ -1,3 +1,8 @@
+.homecontainer {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
 .fixed {
   position: fixed;
   right: 0;
@@ -21,15 +26,33 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px;
+  padding: 1.5rem;
   height: fit-content;
 }
 .recentContainer {
   background-color: rgba(255, 255, 255, 0.7);
+  min-width: 300px;
+  max-width: 550px;
   width: 100%;
+  height: 100%;
   backdrop-filter: blur(10px);
-  padding-bottom: 56px;
-  border-radius: 16px;
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  overflow: hidden;
   margin-top: 19rem;
   z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-bottom: 3.5rem;
+}
+.bilbilak {
+  background-color: rgba(84, 110, 122, 0.5);
+  height: 0.4rem;
+  width: 6rem;
+  border-radius: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
