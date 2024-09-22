@@ -1,14 +1,25 @@
 .card {
+  direction: rtl;
   background-color: rgba(255, 255, 255, 0.7);
   width: 100%;
-  height: 100px;
+  padding: 0.5rem;
   margin-top: 5px;
   margin-bottom: 25px;
   border-radius: 1rem;
-  display: grid;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  grid-column-gap: 10px;
-  grid-row-gap: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.avatar {
+  display: flex;
+  flex-direction: row;
+}
+.avatarInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+.cardInfo {
+  display: flex;
+  width: 50%;
+  flex-direction: column;
 }

@@ -2,8 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Vazir";
+  src: url("./assets/fonts/vazir/webfonts/Vazirmatn-Regular.woff2")
+      format("woff2"),
+    url("./assets/fonts/vazir/ttf/Vazirmatn-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "Vazir", sans-serif;
+}
+
 html,
 body {
+  font-family: "Vazir", sans-serif;
   margin: 0;
   height: 100%;
   font-size: 16px;

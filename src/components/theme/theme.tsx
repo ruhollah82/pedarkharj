@@ -1,11 +1,10 @@
 import { createTheme } from "@mui/material/styles";
-import { CssBaseline } from "@mui/material";
 
 const theme = createTheme({
   typography: {
     fontFamily: "'Vazir', 'Roboto', sans-serif",
     h1: {
-      fontFamily: "'YourCustomFont', serif",
+      fontFamily: "'Vazir', serif",
     },
   },
   palette: {

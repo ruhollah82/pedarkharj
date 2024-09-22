@@ -22,15 +22,7 @@ function Home() {
       </div>
       <div className={styles.recentContainer}>
         <div className={styles.bilbilak}></div>
-        <Notification />
-        <Notification />
-        <Notification />
-        <Notification />
-        <Notification />
-        <Notification />
-        <Notification />
-        <Notification />
-        <Notification />
+
         <Notification />
         <Notification />
         <Notification />
