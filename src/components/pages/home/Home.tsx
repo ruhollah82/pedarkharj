@@ -28,6 +28,11 @@ function Home() {
         <Notification />
         <Notification />
         <Notification />
+        <Notification />
+        <Notification />
+        <Notification />
+        <Notification />
+        <Notification />
       </div>
     </div>
   );
