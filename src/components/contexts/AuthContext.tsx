@@ -1,54 +1,91 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
+import axios from "axios";
 
-interface AuthContextType {
+interface AuthContextProps {
+  currentUser: any;
   isAuthenticated: boolean;
   login: (phoneNumber: string, password: string) => Promise<void>;
+  signup: (
+    phoneNumber: string,
+    password: string,
+    username: string
+  ) => Promise<void>;
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+export const AuthContext = createContext<AuthContextProps | undefined>(
+  undefined
+);
 
-  // Load authentication state from localStorage on initial load
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
   useEffect(() => {
-    const savedAuthState = localStorage.getItem("isAuthenticated");
-    if (savedAuthState === "true") {
-      setIsAuthenticated(true);
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      setCurrentUser(JSON.parse(storedUser));
     }
   }, []);
 
+  const isAuthenticated = !!currentUser;
+
   const login = async (phoneNumber: string, password: string) => {
-    return new Promise<void>((resolve, reject) => {
-      setTimeout(() => {
-        if (phoneNumber === "09123456789" && password === "password") {
-          setIsAuthenticated(true);
-          localStorage.setItem("isAuthenticated", "true");
-          resolve();
-        } else {
-          reject(new Error("نام کاربری یا رمز عبور نامعتبر"));
-        }
-      }, 1000);
-    });
+    try {
+      const response = await axios.get(
+        `http://localhost:8888/users?phoneNumber=${phoneNumber}&password=${password}`
+      );
+
+      if (response.data.length === 0) {
+        throw new Error("شماره تلفن یا رمز عبور اشتباه است.");
+      }
+
+      console.log("Login successful");
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    }
+  };
+
+  const signup = async (
+    phoneNumber: string,
+    password: string,
+    username: string
+  ) => {
+    try {
+      const response = await axios.post("http://localhost:8888/users", {
+        phoneNumber,
+        password,
+        username,
+      });
+      const newUser = response.data;
+      setCurrentUser(newUser);
+      localStorage.setItem("currentUser", JSON.stringify(newUser));
+    } catch (error) {
+      console.error("Signup error:", error);
+      throw error;
+    }
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem("isAuthenticated");
+    setCurrentUser(null);
+    localStorage.removeItem("currentUser");
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{ currentUser, isAuthenticated, login, signup, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = React.useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }

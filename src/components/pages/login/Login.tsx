@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import {
-  Stepper,
-  Step,
-  StepLabel,
+  // Stepper,
+  // Step,
+  // StepLabel,
   Button,
   TextField,
   Box,
@@ -17,9 +17,9 @@ import phoneNumber from "../../../assets/images/phoneNumber.json";
 import styles from "./LoginPage.module.css";
 import Container from "../../container/Container";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom"; // For redirect after login
+import { Link, useNavigate } from "react-router-dom"; // For redirect after login
 
-const steps = ["وارد کردن شماره تلفن", "رمز عبور"];
+// const steps = ["وارد کردن شماره تلفن", "رمز عبور"];
 
 const LoginPage: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -73,10 +73,10 @@ const LoginPage: React.FC = () => {
     try {
       await login(PhoneNumber, password);
       console.log("Logged in successfully");
-      navigate("/app/home"); // Redirect to home page after successful login
+      navigate("/app/home");
     } catch (error: any) {
       setLoginError(error.message);
-      setOpenSnackbar(true); // Open Snackbar on login error
+      setOpenSnackbar(true);
     }
   };
 
@@ -118,6 +118,7 @@ const LoginPage: React.FC = () => {
                   error={!!errors.phoneError}
                   helperText={errors.phoneError}
                 />
+                <Link to="/signup">حساب کاربری نداری؟ خب یکی بساز !</Link>
                 <Box className={styles.handlebutton}>
                   <Button
                     variant="contained"

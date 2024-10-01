@@ -11,10 +11,11 @@ import Calculator from "./components/pages/claculator/Calculator";
 import Search from "./components/pages/serach/Search";
 import LoginPage from "./components/pages/login/Login";
 import { useAuth } from "./components/contexts/AuthContext";
+import Signup from "./components/pages/SignUp/SignUp";
 
 function App() {
   const { isAuthenticated } = useAuth(); // Access the authentication status from context
-
+  // var isAuthenticated = true;
   return (
     <ThemeProvider theme={theme}>
       {isAuthenticated ? (
@@ -33,6 +34,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           {/* Redirect to login page if user tries to access a protected route */}
+          <Route path="/signup" element={<Signup />}></Route>
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       )}

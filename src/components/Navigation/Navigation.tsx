@@ -18,7 +18,6 @@ function BottomNav() {
   return (
     <div
       style={{
-        backgroundColor: "RGBA(225,225,225,0.5)",
         display: "flex",
         position: "fixed",
         bottom: "0",
@@ -37,7 +36,8 @@ function BottomNav() {
           overflow: "hidden",
           display: "flex",
           justifyContent: "space-between",
-          backgroundColor: "rgba(255,255,255,0.5)",
+          backgroundColor: "rgba(255,255,255,0.7)",
+          backdropFilter: "blur(5px)",
         }}
         value={value}
         onChange={handleChange}
