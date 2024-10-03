@@ -5,6 +5,7 @@ import {
   Box,
   Typography,
   Slide,
+  SlideProps,
   Snackbar,
   Alert,
 } from "@mui/material";
@@ -16,6 +17,21 @@ import styles from "./SignUp.module.css";
 import Container from "../../container/Container";
 import { useAuth } from "../../contexts/AuthContext";
 import axios from "axios";
+
+interface SnackbarState {
+  open: boolean;
+  severity: "success" | "error" | "warning" | "info";
+  message: string;
+}
+
+interface MySnackbarProps {
+  snackbarState: SnackbarState;
+  setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarState>>;
+}
+
+const TransitionUp = (props: SlideProps) => {
+  return <Slide {...props} direction="down" />;
+};
 
 const SignupPage: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -382,12 +398,14 @@ const SignupPage: React.FC = () => {
         open={snackbarState.open}
         autoHideDuration={6000}
         onClose={() => setSnackbarState((prev) => ({ ...prev, open: false }))}
-        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+        anchorOrigin={{ horizontal: "center", vertical: "top" }}
+        TransitionComponent={TransitionUp}
       >
         <Alert
           onClose={() => setSnackbarState((prev) => ({ ...prev, open: false }))}
           severity={snackbarState.severity}
           sx={{ width: "100%" }}
+          variant="standard"
         >
           {snackbarState.message}
         </Alert>
