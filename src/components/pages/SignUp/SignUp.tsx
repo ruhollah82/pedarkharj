@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Slide } from "@mui/material"; // Import Slide
 import styles from "./SignUp.module.css";
 import Container from "../../container/Container";
 import PhoneNumberStep from "./PhoneNumberStep";
@@ -21,6 +21,10 @@ const SignupPage: React.FC = () => {
     severity: "success" as "success" | "error" | "warning" | "info",
   });
 
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">(
+    "left"
+  ); // Track the slide direction
+
   const showSnackbar = (
     message: string,
     severity: "success" | "error" | "warning" | "info"
@@ -31,23 +35,30 @@ const SignupPage: React.FC = () => {
   const handleNext = async () => {
     if (activeStep === 0) {
       const success = await sendVerificationCode(phoneNumber, showSnackbar);
-      if (success) setActiveStep((prev) => prev + 1);
+      if (success) {
+        setSlideDirection("left"); // Set the direction of the slide for forward motion
+        setActiveStep((prev) => prev + 1);
+      }
     } else if (activeStep === 1) {
       const success = await verifyNumber(
         phoneNumber,
         verificationCode,
         showSnackbar
       );
-      if (success) setActiveStep((prev) => prev + 1);
+      if (success) {
+        setSlideDirection("left"); // Set the direction for forward motion
+        setActiveStep((prev) => prev + 1);
+      }
     }
   };
 
   const handleBack = () => {
+    setSlideDirection("right"); // Set the direction for backward motion
     setActiveStep((prev) => prev - 1);
   };
 
   const handleFinish = async () => {
-    // Handle finish logic (e.g., create account)
+    // Handle finish logic
   };
 
   return (
@@ -56,34 +67,57 @@ const SignupPage: React.FC = () => {
         ثبت‌نام
       </Typography>
       <Box className={styles.form}>
-        {activeStep === 0 && (
-          <PhoneNumberStep
-            phoneNumber={phoneNumber}
-            setPhoneNumber={setPhoneNumber}
-            handleNext={handleNext}
-            error={errors.phoneError}
-          />
-        )}
-        {activeStep === 1 && (
-          <VerificationCodeStep
-            verificationCode={verificationCode}
-            setVerificationCode={setVerificationCode}
-            handleNext={handleNext}
-            handleBack={handleBack} // Added handleBack prop
-            error={errors.codeError}
-          />
-        )}
-        {activeStep === 2 && (
-          <UserCredentialsStep
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-            handleFinish={handleFinish} // Added necessary props
-            usernameError={errors.usernameError}
-            passwordError={errors.passwordError}
-          />
-        )}
+        <Slide
+          in={activeStep === 0}
+          direction={slideDirection}
+          mountOnEnter
+          unmountOnExit
+        >
+          <div>
+            <PhoneNumberStep
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              handleNext={handleNext}
+              error={errors.phoneError}
+            />
+          </div>
+        </Slide>
+
+        <Slide
+          in={activeStep === 1}
+          direction={slideDirection}
+          mountOnEnter
+          unmountOnExit
+        >
+          <div>
+            <VerificationCodeStep
+              verificationCode={verificationCode}
+              setVerificationCode={setVerificationCode}
+              handleNext={handleNext}
+              handleBack={handleBack}
+              error={errors.codeError}
+            />
+          </div>
+        </Slide>
+
+        <Slide
+          in={activeStep === 2}
+          direction={slideDirection}
+          mountOnEnter
+          unmountOnExit
+        >
+          <div>
+            <UserCredentialsStep
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
+              handleFinish={handleFinish}
+              usernameError={errors.usernameError}
+              passwordError={errors.passwordError}
+            />
+          </div>
+        </Slide>
       </Box>
       <CustomSnackbar
         snackbarState={snackbarState}
