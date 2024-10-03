@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import {
-  Stepper,
-  Step,
-  StepLabel,
   Button,
   TextField,
   Box,
@@ -14,6 +11,7 @@ import {
 import Lottie from "lottie-react";
 import phoneNumberAnim from "../../../assets/images/phoneNumber.json";
 import verificationAnim from "../../../assets/images/verification.json";
+import userPasswordAnim from "../../../assets/images/username.json";
 import styles from "./SignUp.module.css";
 import Container from "../../container/Container";
 import { useAuth } from "../../contexts/AuthContext";
@@ -35,6 +33,7 @@ const SignupPage: React.FC = () => {
     phoneError: "",
     codeError: "",
     passwordError: "",
+    usernameError: "",
   });
 
   const [snackbarState, setSnackbarState] = useState({
@@ -50,14 +49,33 @@ const SignupPage: React.FC = () => {
     setSnackbarState({ open: true, message, severity });
   };
 
-  const { signup } = useAuth();
-
   const validatePhoneNumber = (phone: string) => {
     const phoneRegex = /^\+989\d{9}$/;
     return phoneRegex.test(phone);
   };
 
-  const validateUsername = (username: string) => {};
+  const validateUsername = (username: string): string => {
+    const minLength = 3;
+    const maxLength = 20;
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+
+    if (username.length < minLength || username.length > maxLength) {
+      return `نام کاربری باید بین ${minLength} تا ${maxLength} کاراکتر باشد.`;
+    }
+
+    if (!usernameRegex.test(username)) {
+      return "نام کاربری باید فقط شامل حروف، اعداد و زیرخط باشد.";
+    }
+
+    return "";
+  };
+
+  const validatePassword = (password: string): string => {
+    if (password === "" || password.length <= 6) {
+      return "رمز عبور باید حداقل ۶ کاراکتر باشد.";
+    }
+    return "";
+  };
 
   const sendVerificationCode = async (): Promise<boolean> => {
     try {
@@ -69,8 +87,7 @@ const SignupPage: React.FC = () => {
           code: 0,
         }
       );
-      console.log(response);
-      if (response.data.token != undefined && response.data.token != "") {
+      if (response.data.token !== undefined && response.data.token !== "") {
         setApiToken(response.data.token);
         showSnackbar("کد تایید فرستاده شد", "info");
         return true; // Return true for successful verification
@@ -79,13 +96,14 @@ const SignupPage: React.FC = () => {
         return false; // Return false if verification failed
       }
     } catch (error: any) {
-      const errorMessage = showSnackbar(
+      showSnackbar(
         error.response?.data?.message || "خطای دسترسی به سرور",
         "error"
       );
       return false; // Return false if there was an error
     }
   };
+
   const verifyNumber = async (): Promise<boolean> => {
     try {
       const response = await axios.post(
@@ -96,10 +114,8 @@ const SignupPage: React.FC = () => {
           code: +verificationCode,
         }
       );
-      console.log(response.data);
-      if (response.data.access != undefined) {
+      if (response.data.access !== undefined) {
         setAccess(response.data.access);
-        // showSnackbar("اعتبار سنجی با موفقیت انجام شد", "success");
         return true; // Return true for successful verification
       } else {
         showSnackbar("کد تایید نامعتبر", "warning");
@@ -115,50 +131,76 @@ const SignupPage: React.FC = () => {
   };
 
   const handleNext = async () => {
-    if (activeStep === 0 && !validatePhoneNumber(phoneNumber)) {
+    if (activeStep === 0) {
+      await handlePhoneNumberStep();
+    } else if (activeStep === 1) {
+      await handleVerificationCodeStep();
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+  };
+
+  const handlePhoneNumberStep = async () => {
+    if (!validatePhoneNumber(phoneNumber)) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         phoneError: "شماره تلفن نامعتبر، لطفا شماره تلفن را صحیح وارد کنید.",
       }));
       return;
-    } else if (activeStep === 1 && verificationCode.length !== 5) {
+    }
+
+    setErrors((prevErrors) => ({ ...prevErrors, phoneError: "" }));
+    setDirection("left");
+
+    const isValid = await sendVerificationCode();
+    if (isValid) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+  };
+
+  const handleVerificationCodeStep = async () => {
+    if (verificationCode.length !== 5) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         codeError: "کد تایید باید ۵ رقم باشد.",
       }));
       return;
-    } else if (activeStep === 2 && password == "" && password.length <= 6) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        passwordError: "رمز عبور باید حداقل ۶ کاراکتر باشد.",
-      }));
-      return;
     }
 
-    setErrors({ phoneError: "", codeError: "", passwordError: "" });
+    setErrors((prevErrors) => ({ ...prevErrors, codeError: "" }));
     setDirection("left");
 
-    if (activeStep === 0) {
-      const isValid = await sendVerificationCode(); // Send verification code and wait for the result
-      if (isValid) {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1); // Move to the next step after sending
-      }
-    } else if (activeStep === 1) {
-      const isValid = await verifyNumber(); // Verify the number and wait for the result
-      if (isValid) {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1); // Move to the next step if valid
-      }
-    } else {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1); // Move to the next step for other cases
+    const isValid = await verifyNumber();
+    if (isValid) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
 
-  const handleBack = () => {
-    setDirection("right");
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setUsername(value);
+    const error = validateUsername(value);
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      usernameError: error,
+    }));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPassword(value);
+    const error = validatePassword(value);
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      passwordError: error,
+    }));
   };
 
   const handleFinish = async () => {
+    if (errors.usernameError || errors.passwordError) {
+      return; // If there are errors, prevent submission
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:1111/api/v1/users/signup",
@@ -177,6 +219,19 @@ const SignupPage: React.FC = () => {
     }
   };
 
+  const handleBack = () => {
+    setDirection("right");
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const getTextFieldStyle = (error: string) => ({
+    border: error
+      ? "1px solid red"
+      : username && !error
+      ? "1px solid green"
+      : undefined,
+  });
+
   return (
     <Container className={styles.container}>
       <Typography variant="h5" align="center" className={styles.title}>
@@ -188,6 +243,9 @@ const SignupPage: React.FC = () => {
           {activeStep === 0 && (
             <Slide direction={direction} in={true} mountOnEnter unmountOnExit>
               <Box className={styles.center}>
+                <Typography>
+                  شماری ای که میخای باهاش ثبت نام کنی رو وارد کن
+                </Typography>
                 <Lottie
                   animationData={phoneNumberAnim}
                   loop={false}
@@ -222,6 +280,9 @@ const SignupPage: React.FC = () => {
           {activeStep === 1 && (
             <Slide direction={direction} in={true} mountOnEnter unmountOnExit>
               <Box className={styles.center}>
+                <Typography>
+                  برای تایید شماره تلفنت، یک کد تایید به شمارت فرستادیم
+                </Typography>
                 <Lottie
                   animationData={verificationAnim}
                   loop={false}
@@ -236,6 +297,7 @@ const SignupPage: React.FC = () => {
                   onChange={(e) => setVerificationCode(e.target.value)}
                   error={!!errors.codeError}
                   helperText={errors.codeError}
+                  sx={{ width: "15rem" }}
                 />
                 <Box className={styles.handlebutton}>
                   <Button
@@ -249,10 +311,7 @@ const SignupPage: React.FC = () => {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => {
-                      // verifyNumber();
-                      handleNext();
-                    }}
+                    onClick={handleNext}
                     className={styles.button}
                     type="submit"
                     disabled={!verificationCode}
@@ -267,42 +326,50 @@ const SignupPage: React.FC = () => {
           {activeStep === 2 && (
             <Slide direction={direction} in={true} mountOnEnter unmountOnExit>
               <Box className={styles.center}>
-                <TextField
-                  fullWidth
-                  label="نام کاربری"
-                  variant="outlined"
-                  margin="normal"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                <Typography>نام کاربری و رمزتو وارد کن </Typography>
+                <Lottie
+                  animationData={userPasswordAnim}
+                  loop={false}
+                  style={{ width: "50%" }}
                 />
-                <TextField
-                  type="password"
-                  fullWidth
-                  label="رمز"
-                  variant="outlined"
-                  margin="normal"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  error={!!errors.passwordError}
-                  helperText={errors.passwordError}
-                />
+                <Box sx={{ display: "flex", gap: "20px" }}>
+                  <TextField
+                    fullWidth
+                    label="نام کاربری"
+                    variant="outlined"
+                    margin="normal"
+                    value={username}
+                    onChange={handleUsernameChange}
+                    error={!!errors.usernameError}
+                    helperText={errors.usernameError}
+                  />
+                  <TextField
+                    fullWidth
+                    label="رمز عبور"
+                    variant="outlined"
+                    margin="normal"
+                    type="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    error={!!errors.passwordError}
+                    helperText={errors.passwordError}
+                  />
+                </Box>
                 <Box className={styles.handlebutton}>
-                  {/* <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleBack}
-                    className={styles.button}
-                  >
-                    قبلی
-                  </Button> */}
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={handleFinish}
                     className={styles.button}
                     type="submit"
+                    disabled={
+                      !username ||
+                      !password ||
+                      !!errors.usernameError ||
+                      !!errors.passwordError
+                    }
                   >
-                    ! تمام
+                    ثبت‌نام
                   </Button>
                 </Box>
               </Box>
@@ -313,13 +380,14 @@ const SignupPage: React.FC = () => {
 
       <Snackbar
         open={snackbarState.open}
-        autoHideDuration={5000}
-        onClose={() => setSnackbarState({ ...snackbarState, open: false })}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarState((prev) => ({ ...prev, open: false }))}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
       >
         <Alert
-          onClose={() => setSnackbarState({ ...snackbarState, open: false })}
+          onClose={() => setSnackbarState((prev) => ({ ...prev, open: false }))}
           severity={snackbarState.severity}
+          sx={{ width: "100%" }}
         >
           {snackbarState.message}
         </Alert>
