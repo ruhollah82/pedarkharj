@@ -18,9 +18,6 @@ import styles from "./SignUp.module.css";
 import Container from "../../container/Container";
 import { useAuth } from "../../contexts/AuthContext";
 import axios from "axios";
-import { Console, log } from "console";
-
-const steps = ["Phone Number", "Verification Code", "Create Account"];
 
 const SignupPage: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -31,19 +28,28 @@ const SignupPage: React.FC = () => {
   const [apiToken, setApiToken] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [code, setCode] = useState("");
+  const [access, setAccess] = useState("");
+  const [responsCode, setCode] = useState("");
 
-  const [errors, setErrors] = useState<{
-    phoneError: string;
-    codeError: string;
-    passwordError: string;
-  }>({
+  const [errors, setErrors] = useState({
     phoneError: "",
     codeError: "",
     passwordError: "",
   });
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const [snackbarState, setSnackbarState] = useState({
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error" | "warning" | "info",
+  });
+
+  const showSnackbar = (
+    message: string,
+    severity: "success" | "error" | "warning" | "info"
+  ) => {
+    setSnackbarState({ open: true, message, severity });
+  };
+
   const { signup } = useAuth();
 
   const validatePhoneNumber = (phone: string) => {
@@ -51,7 +57,9 @@ const SignupPage: React.FC = () => {
     return phoneRegex.test(phone);
   };
 
-  const sendVerificationCode = async (): Promise<void> => {
+  const validateUsername = (username: string) => {};
+
+  const sendVerificationCode = async (): Promise<boolean> => {
     try {
       const response = await axios.post(
         "http://localhost:1111/api/v1/users/verify-number",
@@ -62,15 +70,20 @@ const SignupPage: React.FC = () => {
         }
       );
       console.log(response);
-      setApiToken(response.data.token); // Store the token in the state
-      // setVerificationCode(response.data.code);
-      setSnackbarMessage("Verification code sent");
-      setSnackbarOpen(true);
+      if (response.data.token != undefined && response.data.token != "") {
+        setApiToken(response.data.token);
+        showSnackbar("کد تایید فرستاده شد", "info");
+        return true; // Return true for successful verification
+      } else {
+        showSnackbar("خطا در ارسال کد تایید", "warning");
+        return false; // Return false if verification failed
+      }
     } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message || "Failed to send verification code";
-      setSnackbarMessage(errorMessage);
-      setSnackbarOpen(true);
+      const errorMessage = showSnackbar(
+        error.response?.data?.message || "خطای دسترسی به سرور",
+        "error"
+      );
+      return false; // Return false if there was an error
     }
   };
   const verifyNumber = async (): Promise<boolean> => {
@@ -84,21 +97,19 @@ const SignupPage: React.FC = () => {
         }
       );
       console.log(response.data);
-      if (response.data.status == 200) {
-        // setApiToken(response.data.token); // Update the token if necessary
-        setSnackbarMessage("Verification successful");
-        setSnackbarOpen(true);
+      if (response.data.access != undefined) {
+        setAccess(response.data.access);
+        // showSnackbar("اعتبار سنجی با موفقیت انجام شد", "success");
         return true; // Return true for successful verification
       } else {
-        setSnackbarMessage("Invalid verification code.");
-        setSnackbarOpen(true);
+        showSnackbar("کد تایید نامعتبر", "warning");
         return false; // Return false if verification failed
       }
     } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message || "Failed to verify code";
-      setSnackbarMessage(errorMessage);
-      setSnackbarOpen(true);
+      showSnackbar(
+        error.response?.data?.message || "اعتبار سنجی کد نامعتبر",
+        "error"
+      );
       return false; // Return false if there was an error
     }
   };
@@ -116,7 +127,7 @@ const SignupPage: React.FC = () => {
         codeError: "کد تایید باید ۵ رقم باشد.",
       }));
       return;
-    } else if (activeStep === 2 && password.length < 6) {
+    } else if (activeStep === 2 && password == "" && password.length <= 6) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         passwordError: "رمز عبور باید حداقل ۶ کاراکتر باشد.",
@@ -128,8 +139,10 @@ const SignupPage: React.FC = () => {
     setDirection("left");
 
     if (activeStep === 0) {
-      await sendVerificationCode(); // Send verification code and wait for the result
-      setActiveStep((prevActiveStep) => prevActiveStep + 1); // Move to the next step after sending
+      const isValid = await sendVerificationCode(); // Send verification code and wait for the result
+      if (isValid) {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1); // Move to the next step after sending
+      }
     } else if (activeStep === 1) {
       const isValid = await verifyNumber(); // Verify the number and wait for the result
       if (isValid) {
@@ -157,12 +170,10 @@ const SignupPage: React.FC = () => {
         }
       );
       console.log(response);
-      setSnackbarMessage("ثبت‌نام با موفقیت انجام شد.");
-      setSnackbarOpen(true);
+      showSnackbar("ثبت‌نام با موفقیت انجام شد.", "success");
     } catch (error: any) {
       console.error("Signup error:", error);
-      setSnackbarMessage("Signup failed.");
-      setSnackbarOpen(true);
+      showSnackbar("ثبت نام ناموفق", "error");
     }
   };
 
@@ -171,14 +182,6 @@ const SignupPage: React.FC = () => {
       <Typography variant="h5" align="center" className={styles.title}>
         ثبت‌نام
       </Typography>
-
-      {/* <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper> */}
 
       <Box className={styles.form}>
         <Box>
@@ -192,7 +195,7 @@ const SignupPage: React.FC = () => {
                 />
                 <TextField
                   fullWidth
-                  label="Phone Number"
+                  label="شماره تلفن"
                   variant="outlined"
                   margin="normal"
                   value={phoneNumber}
@@ -209,7 +212,7 @@ const SignupPage: React.FC = () => {
                     type="submit"
                     disabled={!phoneNumber}
                   >
-                    Next
+                    بعدی
                   </Button>
                 </Box>
               </Box>
@@ -226,7 +229,7 @@ const SignupPage: React.FC = () => {
                 />
                 <TextField
                   fullWidth
-                  label="Verification Code"
+                  label="کد تایید"
                   variant="outlined"
                   margin="normal"
                   value={verificationCode}
@@ -241,20 +244,20 @@ const SignupPage: React.FC = () => {
                     onClick={handleBack}
                     className={styles.button}
                   >
-                    Back
+                    قبلی
                   </Button>
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      verifyNumber();
+                      // verifyNumber();
                       handleNext();
                     }}
                     className={styles.button}
                     type="submit"
                     disabled={!verificationCode}
                   >
-                    Next
+                    بعدی
                   </Button>
                 </Box>
               </Box>
@@ -266,7 +269,7 @@ const SignupPage: React.FC = () => {
               <Box className={styles.center}>
                 <TextField
                   fullWidth
-                  label="Username"
+                  label="نام کاربری"
                   variant="outlined"
                   margin="normal"
                   value={username}
@@ -275,7 +278,7 @@ const SignupPage: React.FC = () => {
                 <TextField
                   type="password"
                   fullWidth
-                  label="Password"
+                  label="رمز"
                   variant="outlined"
                   margin="normal"
                   value={password}
@@ -284,14 +287,14 @@ const SignupPage: React.FC = () => {
                   helperText={errors.passwordError}
                 />
                 <Box className={styles.handlebutton}>
-                  <Button
+                  {/* <Button
                     variant="contained"
                     color="primary"
                     onClick={handleBack}
                     className={styles.button}
                   >
-                    Back
-                  </Button>
+                    قبلی
+                  </Button> */}
                   <Button
                     variant="contained"
                     color="primary"
@@ -299,7 +302,7 @@ const SignupPage: React.FC = () => {
                     className={styles.button}
                     type="submit"
                   >
-                    Finish
+                    ! تمام
                   </Button>
                 </Box>
               </Box>
@@ -309,13 +312,16 @@ const SignupPage: React.FC = () => {
       </Box>
 
       <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
+        open={snackbarState.open}
+        autoHideDuration={5000}
+        onClose={() => setSnackbarState({ ...snackbarState, open: false })}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity="success">
-          {snackbarMessage}
+        <Alert
+          onClose={() => setSnackbarState({ ...snackbarState, open: false })}
+          severity={snackbarState.severity}
+        >
+          {snackbarState.message}
         </Alert>
       </Snackbar>
     </Container>
