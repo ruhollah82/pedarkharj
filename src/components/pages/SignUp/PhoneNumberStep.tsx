@@ -3,6 +3,7 @@ import React from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import Lottie from "lottie-react";
 import phoneNumberAnim from "../../../assets/images/phoneNumber.json";
+import styles from "./SignUp.module.css";
 
 interface PhoneNumberStepProps {
   phoneNumber: string;
@@ -18,9 +19,13 @@ const PhoneNumberStep: React.FC<PhoneNumberStepProps> = ({
   error,
 }) => {
   return (
-    <Box>
+    <Box className={styles.center}>
       <Typography>شماری ای که میخای باهاش ثبت نام کنی رو وارد کن</Typography>
-      <Lottie animationData={phoneNumberAnim} loop={false} style={{ width: "50%" }} />
+      <Lottie
+        animationData={phoneNumberAnim}
+        loop={false}
+        style={{ width: "50%" }}
+      />
       <TextField
         fullWidth
         label="شماره تلفن"
@@ -31,13 +36,14 @@ const PhoneNumberStep: React.FC<PhoneNumberStepProps> = ({
         error={!!error}
         helperText={error}
       />
-      <Box>
-        <Button
+      <Box className={styles.handlebutton}>
+      <Button
           variant="contained"
           color="primary"
           onClick={handleNext}
           type="submit"
           disabled={!phoneNumber}
+          className={styles.button}
         >
           بعدی
         </Button>

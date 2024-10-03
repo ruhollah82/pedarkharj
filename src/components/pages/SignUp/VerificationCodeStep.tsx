@@ -3,6 +3,7 @@ import React from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import Lottie from "lottie-react";
 import verificationAnim from "../../../assets/images/verification.json";
+import styles from "./SignUp.module.css";
 
 interface VerificationCodeStepProps {
   verificationCode: string;
@@ -20,7 +21,7 @@ const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
   error,
 }) => {
   return (
-    <Box>
+    <Box className={styles.center}>
       <Typography>
         برای تایید شماره تلفنت، یک کد تایید به شمارت فرستادیم
       </Typography>
@@ -40,8 +41,13 @@ const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
         helperText={error}
         sx={{ width: "15rem" }}
       />
-      <Box>
-        <Button variant="contained" color="primary" onClick={handleBack}>
+      <Box className={styles.handlebutton}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleBack}
+          className={styles.button}
+        >
           قبلی
         </Button>
         <Button
@@ -50,6 +56,7 @@ const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
           onClick={handleNext}
           type="submit"
           disabled={!verificationCode}
+          className={styles.button}
         >
           بعدی
         </Button>

@@ -1,6 +1,8 @@
 // src/components/Signup/CustomSnackbar.tsx
 import React from "react";
 import { Snackbar, Alert, Slide, SlideProps } from "@mui/material";
+import styles from "./SignUp.module.css";
+
 
 interface SnackbarState {
   open: boolean;

@@ -3,6 +3,7 @@ import React from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import Lottie from "lottie-react";
 import userPasswordAnim from "../../../assets/images/username.json";
+import styles from "./SignUp.module.css";
 
 interface UserCredentialsStepProps {
   username: string;
@@ -24,7 +25,7 @@ const UserCredentialsStep: React.FC<UserCredentialsStepProps> = ({
   passwordError,
 }) => {
   return (
-    <Box>
+    <Box className={styles.center}>
       <Typography>نام کاربری و رمزتو وارد کن </Typography>
       <Lottie
         animationData={userPasswordAnim}
@@ -54,7 +55,7 @@ const UserCredentialsStep: React.FC<UserCredentialsStepProps> = ({
           helperText={passwordError}
         />
       </Box>
-      <Box>
+      <Box className={styles.handlebutton}>
         <Button
           variant="contained"
           color="primary"
@@ -63,6 +64,7 @@ const UserCredentialsStep: React.FC<UserCredentialsStepProps> = ({
           disabled={
             !username || !password || !!usernameError || !!passwordError
           }
+          className={styles.button}
         >
           ثبت‌نام
         </Button>

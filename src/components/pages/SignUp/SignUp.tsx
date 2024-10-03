@@ -36,7 +36,7 @@ const SignupPage: React.FC = () => {
     if (activeStep === 0) {
       const success = await sendVerificationCode(phoneNumber, showSnackbar);
       if (success) {
-        setSlideDirection("left"); // Set the direction of the slide for forward motion
+        setSlideDirection("right"); // Set the direction of the slide for forward motion
         setActiveStep((prev) => prev + 1);
       }
     } else if (activeStep === 1) {
@@ -46,7 +46,7 @@ const SignupPage: React.FC = () => {
         showSnackbar
       );
       if (success) {
-        setSlideDirection("left"); // Set the direction for forward motion
+        setSlideDirection("right"); // Set the direction for forward motion
         setActiveStep((prev) => prev + 1);
       }
     }
@@ -67,57 +67,61 @@ const SignupPage: React.FC = () => {
         ثبت‌نام
       </Typography>
       <Box className={styles.form}>
-        <Slide
-          in={activeStep === 0}
-          direction={slideDirection}
-          mountOnEnter
-          unmountOnExit
-        >
-          <div>
-            <PhoneNumberStep
-              phoneNumber={phoneNumber}
-              setPhoneNumber={setPhoneNumber}
-              handleNext={handleNext}
-              error={errors.phoneError}
-            />
-          </div>
-        </Slide>
-
-        <Slide
-          in={activeStep === 1}
-          direction={slideDirection}
-          mountOnEnter
-          unmountOnExit
-        >
-          <div>
-            <VerificationCodeStep
-              verificationCode={verificationCode}
-              setVerificationCode={setVerificationCode}
-              handleNext={handleNext}
-              handleBack={handleBack}
-              error={errors.codeError}
-            />
-          </div>
-        </Slide>
-
-        <Slide
-          in={activeStep === 2}
-          direction={slideDirection}
-          mountOnEnter
-          unmountOnExit
-        >
-          <div>
-            <UserCredentialsStep
-              username={username}
-              setUsername={setUsername}
-              password={password}
-              setPassword={setPassword}
-              handleFinish={handleFinish}
-              usernameError={errors.usernameError}
-              passwordError={errors.passwordError}
-            />
-          </div>
-        </Slide>
+        {activeStep === 0 && (
+          <Slide
+            in={activeStep === 0}
+            direction={slideDirection}
+            mountOnEnter
+            unmountOnExit
+          >
+            <div>
+              <PhoneNumberStep
+                phoneNumber={phoneNumber}
+                setPhoneNumber={setPhoneNumber}
+                handleNext={handleNext}
+                error={errors.phoneError}
+              />
+            </div>
+          </Slide>
+        )}
+        {activeStep === 1 && (
+          <Slide
+            in={activeStep === 1}
+            direction={slideDirection}
+            mountOnEnter
+            unmountOnExit
+          >
+            <div>
+              <VerificationCodeStep
+                verificationCode={verificationCode}
+                setVerificationCode={setVerificationCode}
+                handleNext={handleNext}
+                handleBack={handleBack}
+                error={errors.codeError}
+              />
+            </div>
+          </Slide>
+        )}
+        {activeStep === 2 && (
+          <Slide
+            in={activeStep === 2}
+            direction={slideDirection}
+            mountOnEnter
+            unmountOnExit
+          >
+            <div>
+              <UserCredentialsStep
+                username={username}
+                setUsername={setUsername}
+                password={password}
+                setPassword={setPassword}
+                handleFinish={handleFinish}
+                usernameError={errors.usernameError}
+                passwordError={errors.passwordError}
+              />
+            </div>
+          </Slide>
+        )}
       </Box>
       <CustomSnackbar
         snackbarState={snackbarState}
