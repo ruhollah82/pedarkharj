@@ -63,7 +63,7 @@ const useSignup = () => {
       return false;
     } catch (error: any) {
       showSnackbar(
-        error.response?.data?.message || "اعتبار سنجی کد نامعتبر",
+        error.response?.data?.message || "خظای دسترسی به سرور",
         "error"
       );
       return false;

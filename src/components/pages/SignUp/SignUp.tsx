@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Typography, Slide } from "@mui/material"; // Import Slide
+import { Box, Typography, Slide, LinearProgress } from "@mui/material"; // Import Slide
 import styles from "./SignUp.module.css";
 import Container from "../../container/Container";
 import PhoneNumberStep from "./PhoneNumberStep";
@@ -7,6 +7,7 @@ import VerificationCodeStep from "./VerificationCodeStep";
 import UserCredentialsStep from "./UserCredentialsStep";
 import CustomSnackbar from "./CustomSnackbar";
 import useSignup from "./useSignup";
+import ProgresBar from "../../progresBar/progresBar";
 
 const SignupPage: React.FC = () => {
   const { sendVerificationCode, verifyNumber, errors } = useSignup();
@@ -20,10 +21,11 @@ const SignupPage: React.FC = () => {
     message: "",
     severity: "success" as "success" | "error" | "warning" | "info",
   });
+  const [waiting, setWaiting] = useState(false);
 
   const [slideDirection, setSlideDirection] = useState<"left" | "right">(
     "left"
-  ); // Track the slide direction
+  );
 
   const showSnackbar = (
     message: string,
@@ -34,19 +36,24 @@ const SignupPage: React.FC = () => {
 
   const handleNext = async () => {
     if (activeStep === 0) {
+      setWaiting(true);
       const success = await sendVerificationCode(phoneNumber, showSnackbar);
+      setWaiting(false);
+
       if (success) {
-        setSlideDirection("right"); // Set the direction of the slide for forward motion
+        setSlideDirection("left"); // Set the direction of the slide for forward motion
         setActiveStep((prev) => prev + 1);
       }
     } else if (activeStep === 1) {
+      setWaiting(true);
       const success = await verifyNumber(
         phoneNumber,
         verificationCode,
         showSnackbar
       );
+      setWaiting(false);
       if (success) {
-        setSlideDirection("right"); // Set the direction for forward motion
+        setSlideDirection("left"); // Set the direction for forward motion
         setActiveStep((prev) => prev + 1);
       }
     }
@@ -63,6 +70,7 @@ const SignupPage: React.FC = () => {
 
   return (
     <Container className={styles.container}>
+      <ProgresBar active={waiting} />
       <Typography variant="h5" align="center" className={styles.title}>
         ثبت‌نام
       </Typography>
