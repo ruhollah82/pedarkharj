@@ -10,7 +10,7 @@ import {
 import Lottie from "lottie-react";
 import phoneNumberAnim from "../../../assets/images/phoneNumber.json";
 import styles from "./SignUp.module.css";
-import COUNTRIES from "../../countryList";
+import COUNTRIES from "../../countryList/countryList";
 
 // List of country codes and labels
 const countries = COUNTRIES;

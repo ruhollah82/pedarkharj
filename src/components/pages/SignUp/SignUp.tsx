@@ -6,7 +6,7 @@ import PhoneNumberStep from "./PhoneNumberStep";
 import VerificationCodeStep from "./VerificationCodeStep";
 import UserCredentialsStep from "./UserCredentialsStep";
 import CustomSnackbar from "./CustomSnackbar";
-import useSignup from "../../hooks/useSignup";
+import useSignup from "../../../hooks/useSignup";
 import ProgresBar from "../../progresBar/progresBar";
 
 const SignupPage: React.FC = () => {
@@ -65,7 +65,7 @@ const SignupPage: React.FC = () => {
           setSlideDirection("left");
           setActiveStep((prev) => prev + 1);
         } else {
-          showSnackbar(" در ارسال کد تایید", "error");
+          showSnackbar("خطا در ارسال کد تائید", "error");
         }
       } catch (error) {
         console.error(error);

@@ -1,7 +1,7 @@
 // src/hooks/useSignup.ts
 import { useState } from "react";
 import axios from "axios";
-import { token } from "stylis";
+import API from "../components/apiList/apiList";
 
 const useSignup = () => {
   const [apiToken, setApiToken] = useState("");
@@ -18,18 +18,15 @@ const useSignup = () => {
     showSnackbar: Function
   ): Promise<boolean> => {
     try {
-      const response = await axios.post(
-        "http://172.24.3.159:1111/api/v1/users/verify-number",
-        {
-          number: phoneNumber,
-          token: "",
-          code: 0,
-        }
-      );
+      const response = await axios.post(API.postverifyNumber, {
+        number: phoneNumber,
+        token: "",
+        code: 0,
+      });
       console.log(response);
       if (response.data.token) {
         setApiToken(response.data.token);
-        showSnackbar("کد تایید فرستاده شد", "info");
+        showSnackbar("کد تایید فرستاده شد", "success");
         return true;
       }
       console.log(response);
@@ -52,14 +49,11 @@ const useSignup = () => {
     showSnackbar: Function
   ): Promise<boolean> => {
     try {
-      const response = await axios.post(
-        "http://172.24.3.159:1111/api/v1/users/verify-number",
-        {
-          number: phoneNumber,
-          token: apiToken,
-          code: +verificationCode,
-        }
-      );
+      const response = await axios.post(API.postverifyNumber, {
+        number: phoneNumber,
+        token: apiToken,
+        code: +verificationCode,
+      });
       console.log(response);
       if (response.data.status === 303) {
         setAccess(response.data.access);
@@ -84,15 +78,12 @@ const useSignup = () => {
     showSnackbar: Function
   ): Promise<boolean> => {
     try {
-      const response = await axios.post(
-        "http://172.24.3.159:1111/api/v1/users/signup",
-        {
-          number: phoneNumber,
-          name: userName,
-          password: password,
-          token: apiToken,
-        }
-      );
+      const response = await axios.post(API.postSignUp, {
+        number: phoneNumber,
+        name: userName,
+        password: password,
+        token: apiToken,
+      });
       console.log({
         name: userName,
         number: phoneNumber,
