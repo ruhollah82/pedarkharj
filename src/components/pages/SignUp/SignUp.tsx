@@ -6,16 +6,19 @@ import PhoneNumberStep from "./PhoneNumberStep";
 import VerificationCodeStep from "./VerificationCodeStep";
 import UserCredentialsStep from "./UserCredentialsStep";
 import CustomSnackbar from "./CustomSnackbar";
-import useSignup from "./useSignup";
+import useSignup from "../../hooks/useSignup";
 import ProgresBar from "../../progresBar/progresBar";
 
 const SignupPage: React.FC = () => {
-  const { sendVerificationCode, verifyNumber, errors } = useSignup();
+  const { sendVerificationCode, verifyNumber, errors, finishSignUp } =
+    useSignup();
   const [activeStep, setActiveStep] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [apiToken, setApiToken] = useState("");
   const [snackbarState, setSnackbarState] = useState({
     open: false,
     message: "",
@@ -34,27 +37,62 @@ const SignupPage: React.FC = () => {
     setSnackbarState({ open: true, message, severity });
   };
 
+  const validatePhoneNumber = (number: string) => {
+    const phoneRegex = /^[0-9]{10}$/;
+    return phoneRegex.test(number);
+  };
+
   const handleNext = async () => {
     if (activeStep === 0) {
-      setWaiting(true);
-      const success = await sendVerificationCode(phoneNumber, showSnackbar);
-      setWaiting(false);
+      console.log(countryCode + phoneNumber);
 
-      if (success) {
-        setSlideDirection("left"); // Set the direction of the slide for forward motion
-        setActiveStep((prev) => prev + 1);
+      // Validate phone number format
+      if (!validatePhoneNumber(phoneNumber)) {
+        showSnackbar("شماره تلفن نامعتبر", "error");
+        return;
+      }
+
+      setWaiting(true);
+      try {
+        await sleep(2000);
+        const success = await sendVerificationCode(
+          `${countryCode}${phoneNumber}`,
+          showSnackbar
+        );
+        setWaiting(false);
+
+        if (success) {
+          setSlideDirection("left");
+          setActiveStep((prev) => prev + 1);
+        } else {
+          showSnackbar(" در ارسال کد تایید", "error");
+        }
+      } catch (error) {
+        console.error(error);
+        showSnackbar("اوپس.. خطای غیر منتظره ای رخ داد", "error");
+        setWaiting(false);
       }
     } else if (activeStep === 1) {
       setWaiting(true);
-      const success = await verifyNumber(
-        phoneNumber,
-        verificationCode,
-        showSnackbar
-      );
-      setWaiting(false);
-      if (success) {
-        setSlideDirection("left"); // Set the direction for forward motion
-        setActiveStep((prev) => prev + 1);
+      try {
+        await sleep(2000); // Simulate waiting time
+
+        // Verify the phone number
+        const success = await verifyNumber(
+          `${countryCode}${phoneNumber}`,
+          verificationCode,
+          showSnackbar
+        );
+        setWaiting(false);
+
+        if (success) {
+          setSlideDirection("left");
+          setActiveStep((prev) => prev + 1);
+        }
+      } catch (error) {
+        console.error(error);
+        showSnackbar("اوپس.. خطای غیر منتظره ای رخ داد", "error");
+        setWaiting(false);
       }
     }
   };
@@ -65,8 +103,11 @@ const SignupPage: React.FC = () => {
   };
 
   const handleFinish = async () => {
-    // Handle finish logic
+    finishSignUp(countryCode + phoneNumber, username, password, showSnackbar);
   };
+  function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   return (
     <Container className={styles.container}>
@@ -84,6 +125,8 @@ const SignupPage: React.FC = () => {
           >
             <div>
               <PhoneNumberStep
+                Code={countryCode}
+                setCountrycode={setCountryCode}
                 phoneNumber={phoneNumber}
                 setPhoneNumber={setPhoneNumber}
                 handleNext={handleNext}

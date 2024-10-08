@@ -27,7 +27,7 @@ function Home() {
     const fetchExpenses = async () => {
       try {
         const response = await axios.get<Expense[]>(
-          "http://localhost:8888/expenses"
+          "http://172.24.3.129:8888/expenses"
         ); // Adjust API endpoint
         setExpenses(response.data);
       } catch (err) {
@@ -40,10 +40,6 @@ function Home() {
 
     fetchExpenses();
   }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   if (error) {
     return <div>{error}</div>;
@@ -64,7 +60,7 @@ function Home() {
       <div className={styles.recentContainer}>
         <div className={styles.bilbilak}></div>
 
-        {/* Map over expenses and pass each as a prop to Notification */}
+        {loading && "Loading..."}
         {expenses.map((expense) => (
           <Notification key={expense.index} expense={expense} />
         ))}

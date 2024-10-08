@@ -12,11 +12,20 @@ import Search from "./components/pages/serach/Search";
 import LoginPage from "./components/pages/login/Login";
 import { useAuth } from "./components/contexts/AuthContext";
 import Signup from "./components/pages/SignUp/SignUp";
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
+import rtlPlugin from "stylis-plugin-rtl";
+import { prefixer } from "stylis";
 
+const cacheRtl = createCache({
+  key: "mui-rtl",
+  stylisPlugins: [prefixer, rtlPlugin],
+});
 function App() {
   const { isAuthenticated } = useAuth(); // Access the authentication status from context
   // var isAuthenticated = true;
   return (
+    // <CacheProvider value={cacheRtl}>
     <ThemeProvider theme={theme}>
       {isAuthenticated ? (
         <Layout>
@@ -39,6 +48,7 @@ function App() {
         </Routes>
       )}
     </ThemeProvider>
+    // </CacheProvider>
   );
 }
 

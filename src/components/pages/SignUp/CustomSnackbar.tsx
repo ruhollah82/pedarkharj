@@ -3,7 +3,6 @@ import React from "react";
 import { Snackbar, Alert, Slide, SlideProps } from "@mui/material";
 import styles from "./SignUp.module.css";
 
-
 interface SnackbarState {
   open: boolean;
   severity: "success" | "error" | "warning" | "info";
@@ -34,7 +33,7 @@ const CustomSnackbar: React.FC<CustomSnackbarProps> = ({
       <Alert
         onClose={() => setSnackbarState((prev) => ({ ...prev, open: false }))}
         severity={snackbarState.severity}
-        sx={{ width: "100%" }}
+        // sx={{ width: "100%" }}
         variant="standard"
       >
         {snackbarState.message}
@@ -44,4 +43,3 @@ const CustomSnackbar: React.FC<CustomSnackbarProps> = ({
 };
 
 export default CustomSnackbar;
-

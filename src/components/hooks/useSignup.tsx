@@ -1,6 +1,7 @@
 // src/hooks/useSignup.ts
 import { useState } from "react";
 import axios from "axios";
+import { token } from "stylis";
 
 const useSignup = () => {
   const [apiToken, setApiToken] = useState("");
@@ -18,21 +19,25 @@ const useSignup = () => {
   ): Promise<boolean> => {
     try {
       const response = await axios.post(
-        "http://localhost:1111/api/v1/users/verify-number",
+        "http://172.24.3.159:1111/api/v1/users/verify-number",
         {
           number: phoneNumber,
           token: "",
           code: 0,
         }
       );
+      console.log(response);
       if (response.data.token) {
         setApiToken(response.data.token);
         showSnackbar("کد تایید فرستاده شد", "info");
         return true;
       }
+      console.log(response);
+
       showSnackbar("خطا در ارسال کد تایید", "warning");
       return false;
     } catch (error: any) {
+      console.log(error.response);
       showSnackbar(
         error.response?.data?.message || "خطای دسترسی به سرور",
         "error"
@@ -48,18 +53,20 @@ const useSignup = () => {
   ): Promise<boolean> => {
     try {
       const response = await axios.post(
-        "http://localhost:1111/api/v1/users/verify-number",
+        "http://172.24.3.159:1111/api/v1/users/verify-number",
         {
           number: phoneNumber,
           token: apiToken,
           code: +verificationCode,
         }
       );
-      if (response.data.access) {
+      console.log(response);
+      if (response.data.status === 303) {
         setAccess(response.data.access);
         return true;
       }
-      showSnackbar("کد تایید نامعتبر", "warning");
+      console.log(response);
+      showSnackbar(response.data.errors.number, "warning");
       return false;
     } catch (error: any) {
       showSnackbar(
@@ -70,6 +77,47 @@ const useSignup = () => {
     }
   };
 
+  const finishSignUp = async (
+    phoneNumber: string,
+    userName: string,
+    password: string,
+    showSnackbar: Function
+  ): Promise<boolean> => {
+    try {
+      const response = await axios.post(
+        "http://172.24.3.159:1111/api/v1/users/signup",
+        {
+          number: phoneNumber,
+          name: userName,
+          password: password,
+          token: apiToken,
+        }
+      );
+      console.log({
+        name: userName,
+        number: phoneNumber,
+        password: password,
+        token: apiToken,
+      });
+      console.log(response);
+      // if (response.data.token) {
+      //   setApiToken(response.data.token);
+      //   showSnackbar("کد تایید فرستاده شد", "info");
+      return true;
+      // }
+      // console.log(response);
+
+      // showSnackbar("خطا در ارسال کد تایید", "warning");
+      // return false;
+    } catch (error: any) {
+      console.log(error.response);
+      showSnackbar(
+        error.response?.data?.message || "خطای دسترسی به سرور",
+        "error"
+      );
+      return false;
+    }
+  };
   return {
     apiToken,
     access,
@@ -79,6 +127,7 @@ const useSignup = () => {
     setApiToken,
     setAccess,
     setErrors,
+    finishSignUp,
   };
 };
 
