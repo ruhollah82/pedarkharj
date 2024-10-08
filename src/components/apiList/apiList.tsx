@@ -1,13 +1,14 @@
 const customIP = "172.24.3.159";
 const port = "1111";
+const baseURL = "/api/v1";
 
 const devivesAddress = customIP
-  ? `http://${customIP}:${port}/api/v1/devices`
-  : `http://localhost:${port}/api/v1/devices`;
+  ? `http://${customIP}:${port}${baseURL}/devices`
+  : `http://localhost:${port}${baseURL}/devices`;
 
 const userAddres = customIP
-  ? `http://${customIP}:${port}/api/v1/users`
-  : `http://localhost:${port}/api/v1/users`;
+  ? `http://${customIP}:${port}${baseURL}/users`
+  : `http://localhost:${port}${baseURL}/users`;
 
 interface Iapi {
   postLogOut: string;
