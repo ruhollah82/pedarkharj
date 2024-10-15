@@ -27,7 +27,7 @@ function Home() {
     const fetchExpenses = async () => {
       try {
         const response = await axios.get<Expense[]>(
-          "http://172.24.3.129:8888/expenses"
+          "http://localhost:8888/expenses"
         ); // Adjust API endpoint
         setExpenses(response.data);
       } catch (err) {
