@@ -10,13 +10,8 @@ import useSignup from "../../../hooks/useSignup";
 import ProgresBar from "../../progresBar/progresBar";
 
 const SignupPage: React.FC = () => {
-  const {
-    sendVerificationCode,
-    verifyNumber,
-    errors,
-    finishSignUp,
-    checkNumber,
-  } = useSignup();
+  const { sendVerificationCode, verifyNumber, errors, finishSignUp } =
+    useSignup();
   const [activeStep, setActiveStep] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [countryCode, setCountryCode] = useState("");
@@ -60,11 +55,6 @@ const SignupPage: React.FC = () => {
       setWaiting(true);
       try {
         await sleep(2000);
-        const check = await checkNumber(
-          `${countryCode}${phoneNumber}`,
-          showSnackbar
-        );
-        console.log(`check result : ${check[1]?.data.isExist}`);
         const success = await sendVerificationCode(
           `${countryCode}${phoneNumber}`,
           showSnackbar

@@ -16,7 +16,6 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { prefixer } from "stylis";
-import { CookiesProvider } from "react-cookie";
 
 const cacheRtl = createCache({
   key: "mui-rtl",
@@ -28,28 +27,26 @@ function App() {
   return (
     // <CacheProvider value={cacheRtl}>
     <ThemeProvider theme={theme}>
-      <CookiesProvider>
-        {isAuthenticated ? (
-          <Layout>
-            <Routes>
-              <Route path="/app/home" element={<Home />} />
-              <Route path="/app/contacts" element={<Contacts />} />
-              <Route path="/app/account" element={<Account />} />
-              <Route path="/app/calculator" element={<Calculator />} />
-              <Route path="/app/search" element={<Search />} />
-              {/* Add a catch-all route for unknown URLs */}
-              <Route path="*" element={<Navigate to="/app/home" />} />
-            </Routes>
-          </Layout>
-        ) : (
+      {isAuthenticated ? (
+        <Layout>
           <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            {/* Redirect to login page if user tries to access a protected route */}
-            <Route path="/signup" element={<Signup />}></Route>
-            <Route path="*" element={<Navigate to="/login" />} />
+            <Route path="/app/home" element={<Home />} />
+            <Route path="/app/contacts" element={<Contacts />} />
+            <Route path="/app/account" element={<Account />} />
+            <Route path="/app/calculator" element={<Calculator />} />
+            <Route path="/app/search" element={<Search />} />
+            {/* Add a catch-all route for unknown URLs */}
+            <Route path="*" element={<Navigate to="/app/home" />} />
           </Routes>
-        )}
-      </CookiesProvider>
+        </Layout>
+      ) : (
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          {/* Redirect to login page if user tries to access a protected route */}
+          <Route path="/signup" element={<Signup />}></Route>
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      )}
     </ThemeProvider>
     // </CacheProvider>
   );

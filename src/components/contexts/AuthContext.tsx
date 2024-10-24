@@ -11,7 +11,6 @@ interface AuthContextProps {
     username: string
   ) => Promise<void>;
   logout: () => void;
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
 }
 
 interface AuthProviderProps {
@@ -24,7 +23,6 @@ export const AuthContext = createContext<AuthContextProps | undefined>(
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
@@ -33,9 +31,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  useEffect(() => {
-    setIsAuthenticated(!!currentUser);
-  }, [currentUser]);
+  const isAuthenticated = !!currentUser;
 
   const login = async (phoneNumber: string, password: string) => {
     try {
@@ -47,9 +43,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         throw new Error("شماره تلفن یا رمز عبور اشتباه است.");
       }
 
-      const user = response.data[0];
-      setCurrentUser(user);
-      localStorage.setItem("currentUser", JSON.stringify(user));
       console.log("Login successful");
     } catch (error) {
       console.error("Login error:", error);
@@ -84,14 +77,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{
-        currentUser,
-        isAuthenticated,
-        setIsAuthenticated,
-        login,
-        signup,
-        logout,
-      }}
+      value={{ currentUser, isAuthenticated, login, signup, logout }}
     >
       {children}
     </AuthContext.Provider>
