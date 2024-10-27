@@ -1,4 +1,4 @@
-const customIP = "172.24.3.159";
+const customIP = "";
 const port = "1111";
 const baseURL = "/api/v1";
 

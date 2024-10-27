@@ -3,7 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import API from "../components/apiList/apiList";
 
-const useSignup = () => {
+const useAuth = () => {
   const [apiToken, setApiToken] = useState("");
   const [access, setAccess] = useState("");
   const [errors, setErrors] = useState({
@@ -41,6 +41,25 @@ const useSignup = () => {
       );
       return false;
     }
+  };
+
+  const checkNumberExist = async (phoneNunmer: string): Promise<string> => {
+    try {
+      const response = await axios.post(API.postCheckNumber, {
+        number: phoneNunmer,
+      });
+      console.log(response);
+      if (response.data.isExist === true) {
+        return "true";
+      } else {
+        return "false";
+      }
+    } catch (error) {
+      error
+        ? console.log(`check number error : ${error}`)
+        : console.log("check number error");
+    }
+    return "error";
   };
 
   const verifyNumber = async (
@@ -119,7 +138,8 @@ const useSignup = () => {
     setAccess,
     setErrors,
     finishSignUp,
+    checkNumberExist,
   };
 };
 
-export default useSignup;
+export default useAuth;

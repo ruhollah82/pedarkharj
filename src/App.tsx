@@ -11,7 +11,7 @@ import Calculator from "./components/pages/claculator/Calculator";
 import Search from "./components/pages/serach/Search";
 import LoginPage from "./components/pages/login/Login";
 import { useAuth } from "./components/contexts/AuthContext";
-import Signup from "./components/pages/SignUp/SignUp";
+import Signup from "./components/pages/Authentication/Authentication";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";

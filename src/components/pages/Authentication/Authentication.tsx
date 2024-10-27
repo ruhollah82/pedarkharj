@@ -2,16 +2,22 @@ import React, { useState } from "react";
 import { Box, Typography, Slide, LinearProgress } from "@mui/material"; // Import Slide
 import styles from "./SignUp.module.css";
 import Container from "../../container/Container";
-import PhoneNumberStep from "./PhoneNumberStep";
+import PhoneNumberStep from "./EnterPhoneNumberStep";
 import VerificationCodeStep from "./VerificationCodeStep";
 import UserCredentialsStep from "./UserCredentialsStep";
 import CustomSnackbar from "./CustomSnackbar";
-import useSignup from "../../../hooks/useSignup";
+import useAuth from "../../../hooks/useAuth";
 import ProgresBar from "../../progresBar/progresBar";
+import EnterPasswordStep from "./EnterPasswordStep";
 
 const SignupPage: React.FC = () => {
-  const { sendVerificationCode, verifyNumber, errors, finishSignUp } =
-    useSignup();
+  const {
+    sendVerificationCode,
+    verifyNumber,
+    errors,
+    finishSignUp,
+    checkNumberExist,
+  } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [countryCode, setCountryCode] = useState("");
@@ -42,16 +48,46 @@ const SignupPage: React.FC = () => {
     return phoneRegex.test(number);
   };
 
+  const checkNumber = async () => {
+    // Validate phone number format
+    if (!validatePhoneNumber(phoneNumber)) {
+      showSnackbar("شماره تلفن نامعتبر", "error");
+      return;
+    }
+    const isExist = await checkNumberExist(countryCode + phoneNumber);
+    console.log(isExist);
+    if (isExist === undefined) {
+      showSnackbar("خطای دسترسی به سرور", "error");
+      return;
+    } else if (isExist === "true") {
+      // login page must be called
+      setActiveStep(101);
+      return;
+    } else if (isExist === "false") {
+      setActiveStep(1);
+    }
+  };
+
   const handleNext = async () => {
+    // Validate phone number format
+    if (!validatePhoneNumber(phoneNumber)) {
+      showSnackbar("شماره تلفن نامعتبر", "error");
+      return;
+    }
+    const isExist = await checkNumberExist(countryCode + phoneNumber);
+    console.log(isExist);
+    if (isExist === undefined) {
+      showSnackbar("خطای دسترسی به سرور", "error");
+      return;
+    } else if (isExist === "true") {
+      // login page must be called
+      setActiveStep(101);
+    } else if (isExist === "false") {
+      setActiveStep(1);
+    }
     if (activeStep === 0) {
+      checkNumber();
       console.log(countryCode + phoneNumber);
-
-      // Validate phone number format
-      if (!validatePhoneNumber(phoneNumber)) {
-        showSnackbar("شماره تلفن نامعتبر", "error");
-        return;
-      }
-
       setWaiting(true);
       try {
         await sleep(2000);
@@ -113,7 +149,7 @@ const SignupPage: React.FC = () => {
     <Container className={styles.container}>
       <ProgresBar active={waiting} />
       <Typography variant="h5" align="center" className={styles.title}>
-        ثبت‌نام
+        احراز هویت
       </Typography>
       <Box className={styles.form}>
         {activeStep === 0 && (
@@ -169,6 +205,24 @@ const SignupPage: React.FC = () => {
                 handleFinish={handleFinish}
                 usernameError={errors.usernameError}
                 passwordError={errors.passwordError}
+              />
+            </div>
+          </Slide>
+        )}
+        {activeStep === 100 && (
+          <Slide
+            in={activeStep === 100}
+            direction={slideDirection}
+            mountOnEnter
+            unmountOnExit
+          >
+            <div>
+              <EnterPasswordStep
+                password={password}
+                setPassword={setPassword}
+                handleNext={handleNext}
+                handleBack={handleBack}
+                error={errors.codeError}
               />
             </div>
           </Slide>
