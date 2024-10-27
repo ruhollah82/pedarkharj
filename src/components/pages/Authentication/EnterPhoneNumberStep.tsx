@@ -39,7 +39,7 @@ interface PhoneNumberStepProps {
   handleNext: () => void;
   error: string;
 }
-
+console.log("خزعبلات");
 const PhoneNumberStep: React.FC<PhoneNumberStepProps> = ({
   Code,
   setCountrycode,
