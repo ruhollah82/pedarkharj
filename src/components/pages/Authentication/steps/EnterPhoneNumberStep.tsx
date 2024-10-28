@@ -8,9 +8,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import Lottie from "lottie-react";
-import phoneNumberAnim from "../../../assets/images/phoneNumber.json";
-import styles from "./SignUp.module.css";
-import COUNTRIES from "../../countryList/countryList";
+import phoneNumberAnim from "../../../../assets/images/phoneNumber.json";
+import styles from "../SignUp.module.css";
+import COUNTRIES from "../../../countryList/countryList";
 
 // List of country codes and labels
 const countries = COUNTRIES;

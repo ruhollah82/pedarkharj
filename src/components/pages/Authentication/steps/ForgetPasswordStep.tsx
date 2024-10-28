@@ -1,21 +1,21 @@
 // src/components/Signup/VerificationCodeStep.tsx
 import React from "react";
-import { Button, TextField, Box, Typography, Link } from "@mui/material";
+import { Button, TextField, Box, Typography } from "@mui/material";
 import Lottie from "lottie-react";
-import verificationAnim from "../../../assets/images/verification.json";
-import styles from "./SignUp.module.css";
+import verificationAnim from "../../../../assets/images/verification.json";
+import styles from "../SignUp.module.css";
 
-interface EnterPasswordStepProps {
-  password: string;
-  setPassword: (value: string) => void;
+interface VerificationCodeStepProps {
+  verificationCode: string;
+  setVerificationCode: (value: string) => void;
   handleNext: () => void;
   handleBack: () => void;
   error: string;
 }
 
-const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
-  password,
-  setPassword,
+const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
+  verificationCode,
+  setVerificationCode,
   handleNext,
   handleBack,
   error,
@@ -23,7 +23,8 @@ const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
   return (
     <Box className={styles.center}>
       <Typography sx={{ direction: "rtl" }}>
-        منتظرت بودیم! رمز عبورتو وارد کن تا وارد حسابت بشی !
+        اممم... به نظر میرسه قبلا ثبت نام نکردی! ما به شماره تلفنت یک کد تایید
+        ارسال کردیم
       </Typography>
       <Lottie
         animationData={verificationAnim}
@@ -32,28 +33,15 @@ const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
       />
       <TextField
         fullWidth
-        label="رمز عبور"
+        label="کد تایید"
         variant="outlined"
         margin="normal"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        value={verificationCode}
+        onChange={(e) => setVerificationCode(e.target.value)}
         error={!!error}
         helperText={error}
-        sx={{ width: "20rem" }}
-        aria-label="Password input"
-        type="password"
+        sx={{ width: "15rem" }}
       />
-      <Link
-        sx={{
-          width: "15rem",
-          direction: "rtl",
-          fontSize: "0.75rem",
-          textDecoration: "none",
-        }}
-      >
-        رمز عبورمو فراموش کردم
-      </Link>
-
       <Box className={styles.handlebutton}>
         <Button
           variant="contained"
@@ -68,7 +56,7 @@ const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
           color="primary"
           onClick={handleNext}
           type="submit"
-          disabled={!password}
+          disabled={!verificationCode}
           className={styles.button}
         >
           بعدی
@@ -78,4 +66,4 @@ const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
   );
 };
 
-export default EnterPasswordStep;
+export default VerificationCodeStep;

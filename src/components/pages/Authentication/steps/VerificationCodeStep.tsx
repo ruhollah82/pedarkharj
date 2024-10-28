@@ -2,8 +2,8 @@
 import React from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import Lottie from "lottie-react";
-import verificationAnim from "../../../assets/images/verification.json";
-import styles from "./SignUp.module.css";
+import verificationAnim from "../../../../assets/images/verification.json";
+import styles from "../SignUp.module.css";
 
 interface VerificationCodeStepProps {
   verificationCode: string;
@@ -22,9 +22,9 @@ const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
 }) => {
   return (
     <Box className={styles.center}>
-      <Typography>
-        اممم... به نظر میرسه قبلا ثبت نام نکردی ما به شماره تلفنت یک کد تایید
-        ارسال کردیم
+      <Typography sx={{ direction: "rtl" }}>
+        اممم... به نظر میرسه قبلا ثبت نام نکردی! ما به شماره تلفنت یک کد تایید
+        ارسال کردیم.
       </Typography>
       <Lottie
         animationData={verificationAnim}

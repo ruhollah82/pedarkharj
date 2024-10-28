@@ -65,13 +65,15 @@ const useAuth = () => {
   const verifyNumber = async (
     phoneNumber: string,
     verificationCode: string,
+    mode: string,
     showSnackbar: Function
   ): Promise<boolean> => {
     try {
       const response = await axios.post(API.postverifyNumber, {
         number: phoneNumber,
         token: apiToken,
-        code: +verificationCode,
+        otp: +verificationCode,
+        mode: mode,
       });
       console.log(response);
       if (response.data.status === 303) {

@@ -11,7 +11,7 @@ import Calculator from "./components/pages/claculator/Calculator";
 import Search from "./components/pages/serach/Search";
 import LoginPage from "./components/pages/login/Login";
 import { useAuth } from "./components/contexts/AuthContext";
-import Signup from "./components/pages/Authentication/Authentication";
+import Authentication from "./components/pages/Authentication/Authentication";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
@@ -41,10 +41,8 @@ function App() {
         </Layout>
       ) : (
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          {/* Redirect to login page if user tries to access a protected route */}
-          <Route path="/signup" element={<Signup />}></Route>
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="/Authentication" element={<Authentication />}></Route>
+          <Route path="*" element={<Navigate to="/Authentication" />} />
         </Routes>
       )}
     </ThemeProvider>
