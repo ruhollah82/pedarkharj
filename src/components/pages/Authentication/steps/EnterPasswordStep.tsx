@@ -45,17 +45,7 @@ const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
         aria-label="Password input"
         type="password"
       />
-      <Link
-        // onClick={() => setForgetPassword(true)}
-        sx={{
-          width: "15rem",
-          direction: "rtl",
-          fontSize: "0.75rem",
-          textDecoration: "none",
-        }}
-      >
-        رمز عبورمو فراموش کردم
-      </Link>
+      <Button onClick={() => handleNext()}>رمز عبورمو فراموش کردم</Button>
 
       <Box className={styles.handlebutton}>
         <Button
@@ -69,7 +59,7 @@ const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
         <Button
           variant="contained"
           color="primary"
-          onClick={handleNext}
+          // onClick={handleLogin}
           type="submit"
           disabled={!password}
           className={styles.button}

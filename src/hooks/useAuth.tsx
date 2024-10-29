@@ -6,6 +6,7 @@ import API from "../components/apiList/apiList";
 const useAuth = () => {
   const [apiToken, setApiToken] = useState("");
   const [access, setAccess] = useState("");
+  const [resendCodeTimer, setResendCodeTimer] = useState(0);
   const [errors, setErrors] = useState({
     phoneError: "",
     codeError: "",
@@ -15,6 +16,7 @@ const useAuth = () => {
 
   const sendVerificationCode = async (
     phoneNumber: string,
+    mode: string,
     showSnackbar: Function
   ): Promise<boolean> => {
     try {
@@ -22,16 +24,29 @@ const useAuth = () => {
         number: phoneNumber,
         token: "",
         code: 0,
+        mode: mode,
       });
       console.log(response);
-      if (response.data.token) {
+      if (response.data.status === 200) {
         setApiToken(response.data.token);
-        showSnackbar("کد تایید فرستاده شد", "success");
+        showSnackbar("کد اعتبار سنجی فرستاده شد", "success");
+        const delayTimeSeconds = +response.data.delayTimeSeconds;
+        console.log(delayTimeSeconds);
+        setResendCodeTimer(delayTimeSeconds);
+        return true;
+      } else if (
+        response.data.status === 400 &&
+        response.data.code === "number_delay"
+      ) {
+        showSnackbar("کد اعتبار سنجی قبلا فرستاده شده", "warning");
+        const delayTimeSeconds = +response.data.delayTimeSeconds;
+        console.log(delayTimeSeconds);
+        setResendCodeTimer(delayTimeSeconds);
         return true;
       }
       console.log(response);
 
-      showSnackbar("خطا در ارسال کد تایید", "warning");
+      showSnackbar("خطا در ارسال کد تایید", "error");
       return false;
     } catch (error: any) {
       console.log(error.response);
@@ -76,11 +91,8 @@ const useAuth = () => {
         mode: mode,
       });
       console.log(response);
-      if (response.data.status === 303) {
-        setAccess(response.data.access);
-        return true;
-      }
-      console.log(response);
+
+      setResendCodeTimer(60);
       showSnackbar(response.data.errors.number, "warning");
       return false;
     } catch (error: any) {
@@ -141,6 +153,7 @@ const useAuth = () => {
     setErrors,
     finishSignUp,
     checkNumberExist,
+    resendCodeTimer,
   };
 };
 

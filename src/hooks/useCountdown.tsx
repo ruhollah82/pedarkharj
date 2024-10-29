@@ -1,0 +1,27 @@
+import { InsertInvitation } from "@mui/icons-material";
+import { useState, useEffect } from "react";
+
+const useCountdown = (initialSeconds: number): string => {
+  const [seconds, setSeconds] = useState<number>(initialSeconds);
+
+  useEffect(() => {
+    if (seconds <= 0) return;
+
+    const interval = setInterval(() => {
+      setSeconds((prevSeconds) => prevSeconds - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [seconds]);
+
+  // Format the seconds into "MM:SS"
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const formattedTime = `${String(minutes).padStart(2, "0")}:${String(
+    remainingSeconds
+  ).padStart(2, "0")}`;
+
+  return formattedTime;
+};
+
+export default useCountdown;

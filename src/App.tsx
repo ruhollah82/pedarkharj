@@ -9,7 +9,6 @@ import Contacts from "./components/pages/contacts/Contacts";
 import Account from "./components/pages/account/Account";
 import Calculator from "./components/pages/claculator/Calculator";
 import Search from "./components/pages/serach/Search";
-import LoginPage from "./components/pages/login/Login";
 import { useAuth } from "./components/contexts/AuthContext";
 import Authentication from "./components/pages/Authentication/Authentication";
 import { CacheProvider } from "@emotion/react";

@@ -9,6 +9,7 @@ import CustomSnackbar from "./CustomSnackbar";
 import useAuth from "../../../hooks/useAuth";
 import ProgresBar from "../../progresBar/progresBar";
 import EnterPasswordStep from "./steps/EnterPasswordStep";
+import ForgetPasswordStep from "./steps/ForgetPasswordStep";
 
 const AuthenticationPage: React.FC = () => {
   const {
@@ -17,6 +18,7 @@ const AuthenticationPage: React.FC = () => {
     errors,
     finishSignUp,
     checkNumberExist,
+    resendCodeTimer,
   } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -26,6 +28,7 @@ const AuthenticationPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [forgetPassword, setForgetPassword] = useState(false);
   const [apiToken, setApiToken] = useState("");
+
   const [snackbarState, setSnackbarState] = useState({
     open: false,
     message: "",
@@ -69,7 +72,11 @@ const AuthenticationPage: React.FC = () => {
         setActiveStep(100); // For existing numbers
       } else if (isExist === "false") {
         setSlideDirection("left");
-        await sendVerificationCode(countryCode + phoneNumber, showSnackbar);
+        await sendVerificationCode(
+          countryCode + phoneNumber,
+          "signup",
+          showSnackbar
+        );
         setActiveStep(1); // For new numbers
       }
     } catch (error) {
@@ -106,6 +113,28 @@ const AuthenticationPage: React.FC = () => {
       } finally {
         setWaiting(false); // Stop progress bar
       }
+    } else if (activeStep === 100) {
+      setWaiting(true); // Start progress bar
+      await sleep(2000); // Simulate waiting time
+
+      try {
+        await sleep(2000); // Simulated waiting time (optional)
+        const success = await sendVerificationCode(
+          `${countryCode}${phoneNumber}`,
+          "reset_password",
+          showSnackbar
+        );
+
+        if (success) {
+          setSlideDirection("left");
+          setActiveStep(101); // Go to the next step
+        }
+      } catch (error) {
+        console.error("Error verifying number:", error);
+        showSnackbar("اوپس.. خطای غیر منتظره ای رخ داد", "error");
+      } finally {
+        setWaiting(false); // Stop progress bar
+      }
     }
   };
 
@@ -125,7 +154,6 @@ const AuthenticationPage: React.FC = () => {
   function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
-  // forgetPassword && alert("forgetpassword");
   return (
     <Container className={styles.container}>
       <ProgresBar active={waiting} />
@@ -204,7 +232,26 @@ const AuthenticationPage: React.FC = () => {
                 handleNext={handleNext}
                 handleBack={handleBack}
                 error={errors.codeError}
-                // setForgetPassword={setForgetPassword}
+
+              />
+            </div>
+          </Slide>
+        )}
+        {activeStep === 101 && (
+          <Slide
+            in={activeStep === 101}
+            direction={slideDirection}
+            mountOnEnter
+            unmountOnExit
+          >
+            <div>
+              <ForgetPasswordStep
+                error={errors.codeError}
+                handleBack={handleBack}
+                handleNext={handleNext}
+                setVerificationCode={setVerificationCode}
+                verificationCode={verificationCode}
+                seconds={resendCodeTimer}
               />
             </div>
           </Slide>

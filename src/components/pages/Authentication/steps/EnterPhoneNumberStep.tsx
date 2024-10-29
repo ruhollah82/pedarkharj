@@ -53,7 +53,7 @@ const PhoneNumberStep: React.FC<PhoneNumberStepProps> = ({
   setCountrycode(country.mobileCode);
   return (
     <Box className={styles.center}>
-      <Typography className={styles.typography}>
+      <Typography sx={{ direction: "rtl" }}>
         شماری ای که میخای باهاش ثبت نام کنی رو وارد کن
       </Typography>
       <Lottie

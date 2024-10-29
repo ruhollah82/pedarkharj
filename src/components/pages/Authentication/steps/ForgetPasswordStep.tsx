@@ -1,9 +1,9 @@
-// src/components/Signup/VerificationCodeStep.tsx
 import React from "react";
-import { Button, TextField, Box, Typography } from "@mui/material";
+import { Button, TextField, Box, Typography, Link } from "@mui/material";
 import Lottie from "lottie-react";
 import verificationAnim from "../../../../assets/images/verification.json";
 import styles from "../SignUp.module.css";
+import useCountdown from "../../../../hooks/useCountdown";
 
 interface VerificationCodeStepProps {
   verificationCode: string;
@@ -11,6 +11,7 @@ interface VerificationCodeStepProps {
   handleNext: () => void;
   handleBack: () => void;
   error: string;
+  seconds: number;
 }
 
 const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
@@ -19,12 +20,14 @@ const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
   handleNext,
   handleBack,
   error,
+  seconds,
 }) => {
+  const countdown = useCountdown(seconds);
+
   return (
     <Box className={styles.center}>
       <Typography sx={{ direction: "rtl" }}>
-        اممم... به نظر میرسه قبلا ثبت نام نکردی! ما به شماره تلفنت یک کد تایید
-        ارسال کردیم
+        برای راستی آزمایی، ما یک کد اعتبار سنجی به شماره تلفنت ارسال کردیم
       </Typography>
       <Lottie
         animationData={verificationAnim}
@@ -33,7 +36,7 @@ const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
       />
       <TextField
         fullWidth
-        label="کد تایید"
+        label="کد اعتبار سنجی"
         variant="outlined"
         margin="normal"
         value={verificationCode}
@@ -42,6 +45,9 @@ const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
         helperText={error}
         sx={{ width: "15rem" }}
       />
+      <Button disabled={countdown !== "00:00"}>
+        {`ارسال مجدد ${countdown !== "00:00" ? countdown : ""}`}
+      </Button>
       <Box className={styles.handlebutton}>
         <Button
           variant="contained"
