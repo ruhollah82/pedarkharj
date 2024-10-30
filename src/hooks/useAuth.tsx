@@ -16,15 +16,11 @@ const useAuth = () => {
 
   const sendVerificationCode = async (
     phoneNumber: string,
-    mode: string,
     showSnackbar: Function
   ): Promise<boolean> => {
     try {
-      const response = await axios.post(API.postverifyNumber, {
+      const response = await axios.post(API.postSendOTP, {
         number: phoneNumber,
-        token: "",
-        code: 0,
-        mode: mode,
       });
       console.log(response);
       if (response.data.status === 200) {
@@ -43,11 +39,11 @@ const useAuth = () => {
         console.log(delayTimeSeconds);
         setResendCodeTimer(delayTimeSeconds);
         return true;
+      } else {
+        console.log(response);
+        showSnackbar("خطا در ارسال کد تایید", "error");
+        return false;
       }
-      console.log(response);
-
-      showSnackbar("خطا در ارسال کد تایید", "error");
-      return false;
     } catch (error: any) {
       console.log(error.response);
       showSnackbar(
@@ -58,7 +54,10 @@ const useAuth = () => {
     }
   };
 
-  const checkNumberExist = async (phoneNunmer: string): Promise<string> => {
+  const checkNumberExist = async (
+    phoneNunmer: string,
+    showSnackbar: Function
+  ): Promise<string> => {
     try {
       const response = await axios.post(API.postCheckNumber, {
         number: phoneNunmer,
@@ -71,8 +70,8 @@ const useAuth = () => {
       }
     } catch (error) {
       error
-        ? console.log(`check number error : ${error}`)
-        : console.log("check number error");
+        ? showSnackbar("خطای دسترسی به سرور", "error")
+        : console.log(`check number error : ${error}`);
     }
     return "error";
   };
@@ -84,15 +83,16 @@ const useAuth = () => {
     showSnackbar: Function
   ): Promise<boolean> => {
     try {
-      const response = await axios.post(API.postverifyNumber, {
+      const response = await axios.post(API.postVerifyOTP, {
         number: phoneNumber,
         token: apiToken,
         otp: +verificationCode,
         mode: mode,
       });
       console.log(response);
-
-      setResendCodeTimer(60);
+      const delayTimeSeconds = +response.data.delayTimeSeconds;
+      console.log(delayTimeSeconds);
+      setResendCodeTimer(delayTimeSeconds);
       showSnackbar(response.data.errors.number, "warning");
       return false;
     } catch (error: any) {
@@ -124,15 +124,7 @@ const useAuth = () => {
         token: apiToken,
       });
       console.log(response);
-      // if (response.data.token) {
-      //   setApiToken(response.data.token);
-      //   showSnackbar("کد تایید فرستاده شد", "info");
       return true;
-      // }
-      // console.log(response);
-
-      // showSnackbar("خطا در ارسال کد تایید", "warning");
-      // return false;
     } catch (error: any) {
       console.log(error.response);
       showSnackbar(

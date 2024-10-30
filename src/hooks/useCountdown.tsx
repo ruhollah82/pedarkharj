@@ -1,8 +1,11 @@
-import { InsertInvitation } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 
-const useCountdown = (initialSeconds: number): string => {
+const useCountdown = (initialSeconds: number, trigger: number): string => {
   const [seconds, setSeconds] = useState<number>(initialSeconds);
+
+  useEffect(() => {
+    setSeconds(initialSeconds); // Reset the countdown whenever `trigger` changes
+  }, [trigger, initialSeconds]);
 
   useEffect(() => {
     if (seconds <= 0) return;

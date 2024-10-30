@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Slide, LinearProgress } from "@mui/material"; // Import Slide
 import styles from "./SignUp.module.css";
-import Container from "../../container/Container";
+import Container from "../container/Container";
 import PhoneNumberStep from "./steps/EnterPhoneNumberStep";
 import VerificationCodeStep from "./steps/VerificationCodeStep";
 import UserCredentialsStep from "./steps/UserCredentialsStep";
 import CustomSnackbar from "./CustomSnackbar";
-import useAuth from "../../../hooks/useAuth";
-import ProgresBar from "../../progresBar/progresBar";
+import useAuth from "../../hooks/useAuth";
+import ProgresBar from "../progresBar/progresBar";
 import EnterPasswordStep from "./steps/EnterPasswordStep";
 import ForgetPasswordStep from "./steps/ForgetPasswordStep";
 
@@ -52,6 +52,28 @@ const AuthenticationPage: React.FC = () => {
     return phoneRegex.test(number);
   };
 
+  const resendVerificationCode = async () => {
+    setWaiting(true);
+    await sleep(2000); // Simulate waiting time
+
+    try {
+      const success = await sendVerificationCode(
+        `${countryCode}${phoneNumber}`,
+        showSnackbar
+      );
+
+      if (success) {
+        setSlideDirection("left");
+        setActiveStep(101); // Go to the next step
+      }
+    } catch (error) {
+      console.error("Error verifying number:", error);
+      showSnackbar("اوپس.. خطای غیر منتظره ای رخ داد", "error");
+    } finally {
+      setWaiting(false);
+    }
+  };
+
   const checkNumber = async () => {
     if (!validatePhoneNumber(phoneNumber)) {
       showSnackbar("شماره تلفن نامعتبر", "error");
@@ -62,7 +84,10 @@ const AuthenticationPage: React.FC = () => {
     await sleep(2000); // Simulate waiting time
 
     try {
-      const isExist = await checkNumberExist(countryCode + phoneNumber);
+      const isExist = await checkNumberExist(
+        countryCode + phoneNumber,
+        showSnackbar
+      );
       console.log(isExist);
 
       if (isExist === undefined) {
@@ -72,12 +97,13 @@ const AuthenticationPage: React.FC = () => {
         setActiveStep(100); // For existing numbers
       } else if (isExist === "false") {
         setSlideDirection("left");
-        await sendVerificationCode(
+        const response = await sendVerificationCode(
           countryCode + phoneNumber,
-          "signup",
           showSnackbar
         );
-        setActiveStep(1); // For new numbers
+        if (response) {
+          setActiveStep(1); // For new numbers
+        }
       }
     } catch (error) {
       console.error("Error checking number:", error);
@@ -121,7 +147,6 @@ const AuthenticationPage: React.FC = () => {
         await sleep(2000); // Simulated waiting time (optional)
         const success = await sendVerificationCode(
           `${countryCode}${phoneNumber}`,
-          "reset_password",
           showSnackbar
         );
 
@@ -232,7 +257,6 @@ const AuthenticationPage: React.FC = () => {
                 handleNext={handleNext}
                 handleBack={handleBack}
                 error={errors.codeError}
-
               />
             </div>
           </Slide>
@@ -252,6 +276,7 @@ const AuthenticationPage: React.FC = () => {
                 setVerificationCode={setVerificationCode}
                 verificationCode={verificationCode}
                 seconds={resendCodeTimer}
+                sendVerificationCode={resendVerificationCode}
               />
             </div>
           </Slide>

@@ -10,7 +10,7 @@ import Account from "./components/pages/account/Account";
 import Calculator from "./components/pages/claculator/Calculator";
 import Search from "./components/pages/serach/Search";
 import { useAuth } from "./components/contexts/AuthContext";
-import Authentication from "./components/pages/Authentication/Authentication";
+import Authentication from "./components/Authentication/Authentication";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";

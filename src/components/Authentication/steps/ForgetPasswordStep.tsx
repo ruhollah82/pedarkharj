@@ -1,28 +1,36 @@
-import React from "react";
-import { Button, TextField, Box, Typography, Link } from "@mui/material";
+import React, { useState } from "react";
+import { Button, TextField, Box, Typography } from "@mui/material";
 import Lottie from "lottie-react";
-import verificationAnim from "../../../../assets/images/verification.json";
+import verificationAnim from "../../../assets/images/verification.json";
 import styles from "../SignUp.module.css";
-import useCountdown from "../../../../hooks/useCountdown";
+import useCountdown from "../../../hooks/useCountdown";
 
-interface VerificationCodeStepProps {
+interface ForgetPasswordStepProps {
   verificationCode: string;
   setVerificationCode: (value: string) => void;
   handleNext: () => void;
   handleBack: () => void;
   error: string;
   seconds: number;
+  sendVerificationCode: () => void;
 }
 
-const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
+const ForgetPasswordStep: React.FC<ForgetPasswordStepProps> = ({
   verificationCode,
   setVerificationCode,
   handleNext,
   handleBack,
   error,
   seconds,
+  sendVerificationCode,
 }) => {
-  const countdown = useCountdown(seconds);
+  const [triggerCountdown, setTriggerCountdown] = useState(0);
+  const countDown = useCountdown(seconds, triggerCountdown);
+
+  const handleResendCode = () => {
+    sendVerificationCode();
+    setTriggerCountdown((prev) => prev + 1); // Update to restart the countdown
+  };
 
   return (
     <Box className={styles.center}>
@@ -45,8 +53,8 @@ const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
         helperText={error}
         sx={{ width: "15rem" }}
       />
-      <Button disabled={countdown !== "00:00"}>
-        {`ارسال مجدد ${countdown !== "00:00" ? countdown : ""}`}
+      <Button disabled={countDown !== "00:00"} onClick={handleResendCode}>
+        {`ارسال مجدد ${countDown !== "00:00" ? countDown : ""}`}
       </Button>
       <Box className={styles.handlebutton}>
         <Button
@@ -72,4 +80,4 @@ const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
   );
 };
 
-export default VerificationCodeStep;
+export default ForgetPasswordStep;

@@ -18,7 +18,8 @@ interface Iapi {
   postLogIn: string;
   postRefresh: string;
   postSignUp: string;
-  postverifyNumber: string;
+  postSendOTP: string;
+  postVerifyOTP: string;
 }
 
 const API: Iapi = {
@@ -29,7 +30,8 @@ const API: Iapi = {
   postLogIn: `${userAddres}/login`,
   postSignUp: `${userAddres}/signup`,
   postRefresh: `${userAddres}/refresh`,
-  postverifyNumber: `${userAddres}/verify-number`,
+  postSendOTP: `${userAddres}/send-otp`,
+  postVerifyOTP: `${userAddres}/verify-otp`,
 };
 
 export default API;
