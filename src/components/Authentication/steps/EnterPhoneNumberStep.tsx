@@ -50,6 +50,13 @@ const PhoneNumberStep: React.FC<PhoneNumberStepProps> = ({
 }) => {
   const [country, setCountry] = useState<Country>(countries[0]);
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    // Check if the Enter key was pressed
+    if (event.key === "Enter") {
+      handleNext();
+    }
+  };
+
   setCountrycode(country.mobileCode);
   return (
     <Box className={styles.center}>
@@ -69,6 +76,7 @@ const PhoneNumberStep: React.FC<PhoneNumberStepProps> = ({
         margin="normal"
         value={phoneNumber}
         onChange={(e) => setPhoneNumber(e.target.value)}
+        onKeyDown={handleKeyDown}
         error={!!error}
         helperText={error}
         placeholder="مثال :‌ 9123456789"

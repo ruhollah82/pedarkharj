@@ -20,6 +20,12 @@ const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
   handleBack,
   error,
 }) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    // Check if the Enter key was pressed
+    if (event.key === "Enter") {
+      handleNext();
+    }
+  };
   return (
     <Box className={styles.center}>
       <Typography sx={{ direction: "rtl" }}>
@@ -38,6 +44,7 @@ const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({
         margin="normal"
         value={verificationCode}
         onChange={(e) => setVerificationCode(e.target.value)}
+        onKeyDown={handleKeyDown}
         error={!!error}
         helperText={error}
         sx={{ width: "15rem" }}

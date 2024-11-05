@@ -22,6 +22,12 @@ const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
   error,
   // setForgetPassword,
 }) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    // Check if the Enter key was pressed
+    if (event.key === "Enter") {
+      handleNext();
+    }
+  };
   return (
     <Box className={styles.center}>
       <Typography sx={{ direction: "rtl" }}>
@@ -39,6 +45,7 @@ const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
         margin="normal"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        onKeyDown={handleKeyDown}
         error={!!error}
         helperText={error}
         sx={{ width: "20rem" }}

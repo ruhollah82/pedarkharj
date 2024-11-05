@@ -32,6 +32,13 @@ const ForgetPasswordStep: React.FC<ForgetPasswordStepProps> = ({
     setTriggerCountdown((prev) => prev + 1); // Update to restart the countdown
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    // Check if the Enter key was pressed
+    if (event.key === "Enter") {
+      handleNext();
+    }
+  };
+
   return (
     <Box className={styles.center}>
       <Typography sx={{ direction: "rtl" }}>
@@ -49,6 +56,7 @@ const ForgetPasswordStep: React.FC<ForgetPasswordStepProps> = ({
         margin="normal"
         value={verificationCode}
         onChange={(e) => setVerificationCode(e.target.value)}
+        onKeyDown={handleKeyDown}
         error={!!error}
         helperText={error}
         sx={{ width: "15rem" }}
