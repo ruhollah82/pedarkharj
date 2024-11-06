@@ -19,6 +19,7 @@ const AuthenticationPage: React.FC = () => {
     finishSignUp,
     checkNumberExist,
     resendCodeTimer,
+    login,
   } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -72,6 +73,10 @@ const AuthenticationPage: React.FC = () => {
     } finally {
       setWaiting(false);
     }
+  };
+
+  const handleLogin = async () => {
+    login(countryCode + phoneNumber, password, showSnackbar);
   };
 
   const checkNumber = async () => {
@@ -256,6 +261,7 @@ const AuthenticationPage: React.FC = () => {
                 setPassword={setPassword}
                 handleNext={handleNext}
                 handleBack={handleBack}
+                handleLogin={handleLogin}
                 error={errors.codeError}
               />
             </div>

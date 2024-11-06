@@ -2,7 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 import API from "../components/apiList/apiList";
-
+import useCookie from "./useCookie";
 const useAuth = () => {
   const [apiToken, setApiToken] = useState("");
   const [access, setAccess] = useState("");
@@ -13,6 +13,8 @@ const useAuth = () => {
     passwordError: "",
     usernameError: "",
   });
+
+  const { deleteToken, getToken, saveToken } = useCookie();
 
   const sendVerificationCode = async (
     phoneNumber: string,
@@ -76,6 +78,37 @@ const useAuth = () => {
     return "error";
   };
 
+  const login = async (
+    phoneNumber: string,
+    password: string,
+    showSnackbar: Function
+  ) => {
+    try {
+      const response = await axios.post(API.postLogIn, {
+        number: phoneNumber,
+        password: password,
+      });
+      console.log(response);
+      if (response.status === 200) {
+        if (response.data.status === 200) {
+          console.log("token must be saved");
+
+          saveToken(
+            "access",
+            response.data.access,
+            +response.data.accessExpireSeconds
+          );
+          saveToken("refresh", response.data.refresh, 604800);
+          saveToken(
+            "test",
+            "this is test token that saved in login function call",
+            1000000
+          );
+        }
+      }
+    } catch (error) {}
+  };
+
   const verifyNumber = async (
     phoneNumber: string,
     verificationCode: string,
@@ -90,16 +123,36 @@ const useAuth = () => {
         mode: mode,
       });
       console.log(response);
-      const delayTimeSeconds = +response.data.delayTimeSeconds;
-      console.log(delayTimeSeconds);
-      setResendCodeTimer(delayTimeSeconds);
-      showSnackbar(response.data.errors.number, "warning");
+      if (response.status === 200) {
+        console.log("status 200");
+        if (
+          response.data.status === 303 &&
+          response.data.code === "go_signup"
+        ) {
+          showSnackbar("اعتبارسنجی با موفقیت انجام شد", "success");
+          return true;
+        } else if (
+          response.data.status === 400 &&
+          response.data.code === "wrong_otp"
+        ) {
+          console.log("wrong otp");
+          showSnackbar("کد اعتبار سنجی اشتباه", "error");
+          return false;
+        } else if (
+          response.data.status === 400 &&
+          response.data.code === "invalid_field"
+        ) {
+          console.log("invalaid field");
+          showSnackbar("کد اعتبار سنجی نامعتبر", "error");
+          return false;
+        } else if (response.data.status === 500) {
+          showSnackbar("خطای داخلی سرور");
+          return false;
+        }
+      }
       return false;
     } catch (error: any) {
-      showSnackbar(
-        error.response?.data?.message || "خظای دسترسی به سرور",
-        "error"
-      );
+      showSnackbar("خظای دسترسی به سرور", "error");
       return false;
     }
   };
@@ -146,6 +199,7 @@ const useAuth = () => {
     finishSignUp,
     checkNumberExist,
     resendCodeTimer,
+    login,
   };
 };
 

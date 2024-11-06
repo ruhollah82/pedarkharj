@@ -10,6 +10,8 @@ interface EnterPasswordStepProps {
   setPassword: (value: string) => void;
   handleNext: () => void;
   handleBack: () => void;
+  handleLogin: () => void;
+
   error: string;
   // setForgetPassword: (value: boolean) => void;
 }
@@ -19,6 +21,7 @@ const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
   setPassword,
   handleNext,
   handleBack,
+  handleLogin,
   error,
   // setForgetPassword,
 }) => {
@@ -66,7 +69,7 @@ const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
         <Button
           variant="contained"
           color="primary"
-          // onClick={handleLogin}
+          onClick={handleLogin}
           type="submit"
           disabled={!password}
           className={styles.button}
