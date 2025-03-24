@@ -28,7 +28,6 @@ const AuthenticationPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [forgetPassword, setForgetPassword] = useState(false);
-  const [apiToken, setApiToken] = useState("");
 
   const [snackbarState, setSnackbarState] = useState({
     open: false,

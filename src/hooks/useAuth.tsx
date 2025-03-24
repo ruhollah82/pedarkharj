@@ -2,7 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 import API from "../components/apiList/apiList";
-import useCookie from "./useCookie";
+import useAuthToken from "./useAuthToken";
 const useAuth = () => {
   const [apiToken, setApiToken] = useState("");
   const [access, setAccess] = useState("");
@@ -14,7 +14,7 @@ const useAuth = () => {
     usernameError: "",
   });
 
-  const { deleteToken, getToken, saveToken } = useCookie();
+  const { deleteToken, getToken, saveToken } = useAuthToken();
 
   const sendVerificationCode = async (
     phoneNumber: string,
@@ -38,7 +38,7 @@ const useAuth = () => {
       ) {
         showSnackbar("کد اعتبار سنجی قبلا فرستاده شده", "warning");
         const delayTimeSeconds = +response.data.delayTimeSeconds;
-        console.log(delayTimeSeconds);
+        console.log("Delay time : ", delayTimeSeconds);
         setResendCodeTimer(delayTimeSeconds);
         return true;
       } else {

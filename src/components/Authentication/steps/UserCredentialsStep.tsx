@@ -1,9 +1,9 @@
-// src/components/Signup/UserCredentialsStep.tsx
 import React from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import Lottie from "lottie-react";
 import userPasswordAnim from "../../../assets/images/username.json";
 import styles from "../SignUp.module.css";
+import { green } from "@mui/material/colors";
 
 interface UserCredentialsStepProps {
   username: string;
@@ -24,9 +24,16 @@ const UserCredentialsStep: React.FC<UserCredentialsStepProps> = ({
   usernameError,
   passwordError,
 }) => {
+  const isPasswordValid = password.length >= 8;
+
+  // Ensure username doesn't contain invalid characters
+  const invalidCharsPattern = /[!@#$%^&*()_\-+=\\|[\]{}"':;?\/><,.]/;
+  const isUsernameValid =
+    !invalidCharsPattern.test(username) && username.length > 2;
+
   return (
     <Box className={styles.center}>
-      <Typography>نام کاربری و رمزتو وارد کن </Typography>
+      <Typography>نام کاربری و رمزتو وارد کن</Typography>
       <Lottie
         animationData={userPasswordAnim}
         loop={false}
@@ -40,8 +47,26 @@ const UserCredentialsStep: React.FC<UserCredentialsStepProps> = ({
           margin="normal"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          error={!!usernameError}
-          helperText={usernameError}
+          error={!!usernameError || (!isUsernameValid && username !== "")}
+          helperText={
+            usernameError || username === ""
+              ? ""
+              : isUsernameValid
+              ? ""
+              : "نام کاربری باید تنها شامل اعداد و حروف فارسی و انگلیسی و بیشتر از ۲ کرکتر باشد"
+          }
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor:
+                  username === "" ? "" : isUsernameValid ? "green" : "red",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor:
+                  username === "" ? "" : isUsernameValid ? "green" : "red",
+              },
+            },
+          }}
         />
         <TextField
           fullWidth
@@ -51,8 +76,26 @@ const UserCredentialsStep: React.FC<UserCredentialsStepProps> = ({
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          error={!!passwordError}
-          helperText={passwordError}
+          error={!!passwordError || (!isPasswordValid && password !== "")}
+          helperText={
+            passwordError || password === ""
+              ? ""
+              : !isPasswordValid
+              ? "رمز عبور باید حد اقل شامل ۸ کرکتر باشد"
+              : ""
+          }
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor:
+                  password === "" ? "" : isPasswordValid ? "green" : "red",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor:
+                  password === "" ? "" : isPasswordValid ? "green" : "red", // Apply on focus
+              },
+            },
+          }}
         />
       </Box>
       <Box className={styles.handlebutton}>
@@ -61,9 +104,7 @@ const UserCredentialsStep: React.FC<UserCredentialsStepProps> = ({
           color="primary"
           onClick={handleFinish}
           type="submit"
-          disabled={
-            !username || !password || !!usernameError || !!passwordError
-          }
+          disabled={!isPasswordValid || !isUsernameValid}
           className={styles.button}
         >
           ثبت‌نام
