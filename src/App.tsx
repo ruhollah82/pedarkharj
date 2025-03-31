@@ -8,7 +8,7 @@ import Home from "./modules/Home/Home";
 import Contacts from "./modules/Contacts/Contacts";
 import Account from "./modules/Account/Account";
 import Calculator from "./modules/Claculator/Calculator";
-import Search from "./modules/Serach/Search";
+import Search from "./modules/Search/Search";
 import { useAuth } from "./context/AuthContext";
 import Authentication from "./modules/Authentication/Authentication";
 import { CacheProvider } from "@emotion/react";
