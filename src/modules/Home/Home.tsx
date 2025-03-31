@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Container from "../../container/Container";
+import Container from "../../layouts/container/Container";
 import styles from "./Home.module.css";
 import { QuestionMarkOutlined } from "@mui/icons-material";
 import { Avatar, Box } from "@mui/material";
 import WalletBalance from "./Balance";
 import Display from "./Display";
-import Notification from "../../Notification/Notification";
+import Notification from "../../components/Notification/Notification";
 import axios from "axios";
 
 interface Expense {

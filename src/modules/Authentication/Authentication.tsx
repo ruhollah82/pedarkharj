@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Slide, LinearProgress } from "@mui/material"; // Import Slide
 import styles from "./SignUp.module.css";
-import Container from "../container/Container";
+import Container from "../../layouts/container/Container";
 import PhoneNumberStep from "./steps/EnterPhoneNumberStep";
 import VerificationCodeStep from "./steps/VerificationCodeStep";
 import UserCredentialsStep from "./steps/UserCredentialsStep";
 import CustomSnackbar from "./CustomSnackbar";
 import useAuth from "../../hooks/useAuth";
-import ProgresBar from "../progresBar/progresBar";
+import ProgresBar from "../../components/progresBar/progresBar";
 import EnterPasswordStep from "./steps/EnterPasswordStep";
 import ForgetPasswordStep from "./steps/ForgetPasswordStep";
 

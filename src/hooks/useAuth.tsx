@@ -1,7 +1,7 @@
 // src/hooks/useSignup.ts
 import { useState } from "react";
 import axios from "axios";
-import API from "../components/apiList/apiList";
+import API from "../services/API/apiList";
 import useAuthToken from "./useAuthToken";
 const useAuth = () => {
   const [apiToken, setApiToken] = useState("");
