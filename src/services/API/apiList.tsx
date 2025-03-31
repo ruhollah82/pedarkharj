@@ -1,3 +1,5 @@
+import api from "../../types/interfaces/api";
+
 const customIP = "";
 const port = "1111";
 const baseURL = "/api/v1";
@@ -10,19 +12,7 @@ const userAddres = customIP
   ? `http://${customIP}:${port}${baseURL}/users`
   : `http://localhost:${port}${baseURL}/users`;
 
-interface Iapi {
-  postLogOut: string;
-  postLogOutAll: string;
-  postCheckNumber: string;
-  getUserInfo: string;
-  postLogIn: string;
-  postRefresh: string;
-  postSignUp: string;
-  postSendOTP: string;
-  postVerifyOTP: string;
-}
-
-const API: Iapi = {
+const API: api = {
   postLogOut: `${devivesAddress}/logout`,
   postLogOutAll: `${devivesAddress}/logout-all`,
   postCheckNumber: `${userAddres}/check-number`,

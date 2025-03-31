@@ -3,15 +3,7 @@ import styles from "./Notification.module.css";
 import { Avatar, Collapse } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-
-interface Expense {
-  index: number;
-  date: string;
-  picture: string;
-  title: string;
-  amount: number;
-  description: string;
-}
+import Expense from "../../types/interfaces/expense";
 
 interface NotificationProps {
   expense: Expense; // Define the prop type for an expense

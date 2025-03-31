@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Container from "../../layouts/container/Container";
+import Container from "../../layouts/Container/Container";
 import styles from "./Home.module.css";
 import { QuestionMarkOutlined } from "@mui/icons-material";
 import { Avatar, Box } from "@mui/material";

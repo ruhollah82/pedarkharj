@@ -1,6 +1,6 @@
 import React from "react";
 import Navigation from "../Navigation/Navigation";
-import Container from "../container/Container";
+import Container from "../Container/Container";
 import styles from "./Layout.module.css";
 
 interface Ilayout {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import Lottie from "lottie-react";
-import verificationAnim from "../../../assets/images/verification.json";
+import verificationAnim from "../../../assets/Images/verification.json";
 import styles from "../SignUp.module.css";
 import useCountdown from "../../../hooks/useCountdown";
 

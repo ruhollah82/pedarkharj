@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import Lottie from "lottie-react";
-import userPasswordAnim from "../../../assets/images/username.json";
+import userPasswordAnim from "../../../assets/Images/username.json";
 import styles from "../SignUp.module.css";
 import { green } from "@mui/material/colors";
 

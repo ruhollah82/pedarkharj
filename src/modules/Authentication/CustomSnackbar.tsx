@@ -1,12 +1,7 @@
 // src/components/Signup/CustomSnackbar.tsx
 import React from "react";
 import { Snackbar, Alert, Slide, SlideProps } from "@mui/material";
-
-interface SnackbarState {
-  open: boolean;
-  severity: "success" | "error" | "warning" | "info";
-  message: string;
-}
+import SnackbarState from "../../types/interfaces/snackbarState";
 
 interface CustomSnackbarProps {
   snackbarState: SnackbarState;

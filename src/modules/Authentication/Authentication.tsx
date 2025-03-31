@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Slide, LinearProgress } from "@mui/material"; // Import Slide
 import styles from "./SignUp.module.css";
-import Container from "../../layouts/container/Container";
+import Container from "../../layouts/Container/Container";
 import PhoneNumberStep from "./steps/EnterPhoneNumberStep";
 import VerificationCodeStep from "./steps/VerificationCodeStep";
 import UserCredentialsStep from "./steps/UserCredentialsStep";

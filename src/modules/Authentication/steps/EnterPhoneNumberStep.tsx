@@ -8,20 +8,13 @@ import {
   InputAdornment,
 } from "@mui/material";
 import Lottie from "lottie-react";
-import phoneNumberAnim from "../../../assets/images/phoneNumber.json";
+import phoneNumberAnim from "../../../assets/Images/phoneNumber.json";
 import styles from "../SignUp.module.css";
 import COUNTRIES from "../../../data/countryList/countryList";
+import Country from "../../../types/interfaces/country";
 
 // List of country codes and labels
 const countries = COUNTRIES;
-
-interface Country {
-  name: string;
-  code: string;
-  timezone: string;
-  utc: string;
-  mobileCode: string;
-}
 
 function getCemoji(country: Country): string {
   const code = country.code.toUpperCase(); // Ensure the code is uppercase
