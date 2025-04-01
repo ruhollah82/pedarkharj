@@ -1,5 +1,5 @@
 import React from "react";
-import Navigation from "../Navigation/Navigation";
+import Navigation from "../../modules/Navigation/Navigation";
 import Container from "../Container/Container";
 import styles from "./Layout.module.css";
 
