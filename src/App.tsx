@@ -26,7 +26,7 @@ function App() {
   return (
     // <CacheProvider value={cacheRtl}>
     <ThemeProvider theme={theme}>
-      {isAuthenticated ? (
+      {true ? (
         <Layout>
           <Routes>
             <Route path="/app/home" element={<Home />} />

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Menu } from "antd";
 import { Icon } from "@iconify/react";
 import { Link, useLocation } from "react-router-dom";
@@ -40,7 +39,7 @@ function BottomNav() {
         <Menu.Item key="account" style={{ flex: 1, textAlign: "center" }}>
           <Link to="/app/account">
             <Icon
-              icon="mdi:account-circle"
+              icon="solar:user-outline"
               width={24}
               height={24}
               style={{
@@ -53,7 +52,7 @@ function BottomNav() {
         <Menu.Item key="contacts" style={{ flex: 1, textAlign: "center" }}>
           <Link to="/app/contacts">
             <Icon
-              icon="mdi:contacts"
+              icon="solar:users-group-rounded-linear"
               width={24}
               height={24}
               style={{
@@ -66,7 +65,7 @@ function BottomNav() {
         <Menu.Item key="calculator" style={{ flex: 1, textAlign: "center" }}>
           <Link to="/app/calculator">
             <Icon
-              icon="mdi:calculator"
+              icon="solar:calculator-linear"
               width={24}
               height={24}
               style={{
@@ -79,7 +78,7 @@ function BottomNav() {
         <Menu.Item key="search" style={{ flex: 1, textAlign: "center" }}>
           <Link to="/app/search">
             <Icon
-              icon="mdi:format-list-bulleted"
+              icon="solar:rounded-magnifer-linear"
               width={24}
               height={24}
               style={{
@@ -92,7 +91,7 @@ function BottomNav() {
         <Menu.Item key="home" style={{ flex: 1, textAlign: "center" }}>
           <Link to="/app/home">
             <Icon
-              icon="mdi:home"
+              icon="solar:home-angle-linear"
               width={24}
               height={24}
               style={{ color: currentPath === "home" ? "#1890ff" : "#595959" }}

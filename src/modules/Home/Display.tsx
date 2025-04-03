@@ -1,18 +1,19 @@
-import React from "react";
 import styles from "./Display.module.css";
-import { Card } from "@mui/material";
-import {
-  ArrowDownward,
-  ArrowUpward,
-  ArrowUpwardOutlined,
-} from "@mui/icons-material";
+import { Icon } from "@iconify/react";
 
 function Display() {
   return (
     <div className={styles.display}>
       <div className={styles.card}>
         <div className={styles.debt}>
-          <ArrowUpward style={{ color: "white" }} />
+          <Icon
+            icon="solar:alt-arrow-up-linear"
+            width={24}
+            height={24}
+            style={{
+              color: "white",
+            }}
+          />
         </div>
         <div>
           <div>بدهکار</div>
@@ -21,7 +22,14 @@ function Display() {
       </div>
       <div className={styles.card}>
         <div className={styles.income}>
-          <ArrowDownward style={{ color: "white" }} />
+          <Icon
+            icon="solar:alt-arrow-down-linear"
+            width={24}
+            height={24}
+            style={{
+              color: "white",
+            }}
+          />
         </div>
         <div>
           <div>بستانکار</div>
