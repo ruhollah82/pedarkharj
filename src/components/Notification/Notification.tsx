@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Avatar, Typography, Space, Button, Row, Col } from "antd";
-import { UpOutlined, DownOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import Expense from "../../types/interfaces/expense";
 import { Icon } from "@iconify/react";

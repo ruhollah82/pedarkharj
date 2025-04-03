@@ -2,6 +2,22 @@ import { Menu } from "antd";
 import { Icon } from "@iconify/react";
 import { Link, useLocation } from "react-router-dom";
 
+const menuItems = [
+  { key: "account", icon: "solar:user-outline", path: "/app/account" },
+  {
+    key: "contacts",
+    icon: "solar:users-group-rounded-linear",
+    path: "/app/contacts",
+  },
+  {
+    key: "calculator",
+    icon: "solar:calculator-linear",
+    path: "/app/calculator",
+  },
+  { key: "search", icon: "solar:rounded-magnifer-linear", path: "/app/search" },
+  { key: "home", icon: "solar:home-angle-linear", path: "/app/home" },
+];
+
 function BottomNav() {
   const location = useLocation();
   const currentPath = location.pathname.split("/").pop() || "home";
@@ -32,72 +48,29 @@ function BottomNav() {
           borderTopLeftRadius: "15px",
           borderTopRightRadius: "15px",
           display: "flex",
-          justifyContent: "space-between",
-          padding: "8px 0",
+          justifyContent: "center",
+          gap: "8px",
+          padding: "8px",
         }}
       >
-        <Menu.Item key="account" style={{ flex: 1, textAlign: "center" }}>
-          <Link to="/app/account">
-            <Icon
-              icon="solar:user-outline"
-              width={24}
-              height={24}
-              style={{
-                color: currentPath === "account" ? "#1890ff" : "#595959",
-              }}
-            />
-          </Link>
-        </Menu.Item>
-
-        <Menu.Item key="contacts" style={{ flex: 1, textAlign: "center" }}>
-          <Link to="/app/contacts">
-            <Icon
-              icon="solar:users-group-rounded-linear"
-              width={24}
-              height={24}
-              style={{
-                color: currentPath === "contacts" ? "#1890ff" : "#595959",
-              }}
-            />
-          </Link>
-        </Menu.Item>
-
-        <Menu.Item key="calculator" style={{ flex: 1, textAlign: "center" }}>
-          <Link to="/app/calculator">
-            <Icon
-              icon="solar:calculator-linear"
-              width={24}
-              height={24}
-              style={{
-                color: currentPath === "calculator" ? "#1890ff" : "#595959",
-              }}
-            />
-          </Link>
-        </Menu.Item>
-
-        <Menu.Item key="search" style={{ flex: 1, textAlign: "center" }}>
-          <Link to="/app/search">
-            <Icon
-              icon="solar:rounded-magnifer-linear"
-              width={24}
-              height={24}
-              style={{
-                color: currentPath === "search" ? "#1890ff" : "#595959",
-              }}
-            />
-          </Link>
-        </Menu.Item>
-
-        <Menu.Item key="home" style={{ flex: 1, textAlign: "center" }}>
-          <Link to="/app/home">
-            <Icon
-              icon="solar:home-angle-linear"
-              width={24}
-              height={24}
-              style={{ color: currentPath === "home" ? "#1890ff" : "#595959" }}
-            />
-          </Link>
-        </Menu.Item>
+        {menuItems.map(({ key, icon, path }) => (
+          <Menu.Item
+            key={key}
+            style={{
+              width: "4rem",
+              textAlign: "center",
+            }}
+          >
+            <Link to={path}>
+              <Icon
+                icon={icon}
+                width={24}
+                height={24}
+                style={{ color: currentPath === key ? "#1890ff" : "#595959" }}
+              />
+            </Link>
+          </Menu.Item>
+        ))}
       </Menu>
     </div>
   );
