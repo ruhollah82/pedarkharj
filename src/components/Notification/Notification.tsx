@@ -82,7 +82,6 @@ const Notification: React.FC<NotificationProps> = ({ expense }) => {
                     background: "linear-gradient(45deg, #52c41a, #a0d911)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
-                    opacity: expanded ? 0 : 1,
                     maxHeight: expanded ? "0" : "1.5em",
                     transition: "all 0.3s ease-in-out",
                   }}
@@ -101,9 +100,9 @@ const Notification: React.FC<NotificationProps> = ({ expense }) => {
               overflow: "hidden",
               transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
               paddingTop: expanded ? "1rem" : "0",
-              borderTop: expanded
-                ? "1px dashed rgba(2, 119, 189, 0.2)"
-                : "transparent",
+              // borderTop: expanded
+              //   ? "1px dashed rgba(2, 119, 189, 0.2)"
+              //   : "transparent",
               marginTop: expanded ? "1rem" : "0",
             }}
           >
