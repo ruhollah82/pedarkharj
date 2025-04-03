@@ -10,7 +10,7 @@ interface VerificationCodeStepProps {
   setVerificationCode: (value: string) => void;
   handleNext: () => void;
   handleBack: () => void;
-  error: string;
+  error: string | undefined;
 }
 
 const VerificationCodeStep: React.FC<VerificationCodeStepProps> = ({

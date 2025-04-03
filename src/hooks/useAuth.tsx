@@ -1,4 +1,3 @@
-// src/hooks/useSignup.ts
 import { useState } from "react";
 import axios from "axios";
 import API from "../services/API/apiList";

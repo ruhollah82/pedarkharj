@@ -30,7 +30,7 @@ interface PhoneNumberStepProps {
   phoneNumber: string;
   setPhoneNumber: (value: string) => void;
   handleNext: () => void;
-  error: string;
+  error: string | undefined;
 }
 console.log("خزعبلات");
 const PhoneNumberStep: React.FC<PhoneNumberStepProps> = ({

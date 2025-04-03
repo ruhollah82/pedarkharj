@@ -11,8 +11,8 @@ interface UserCredentialsStepProps {
   password: string;
   setPassword: (value: string) => void;
   handleFinish: () => void;
-  usernameError: string;
-  passwordError: string;
+  usernameError: string | undefined;
+  passwordError: string | undefined;
 }
 
 const UserCredentialsStep: React.FC<UserCredentialsStepProps> = ({

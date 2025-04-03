@@ -12,7 +12,7 @@ interface EnterPasswordStepProps {
   handleBack: () => void;
   handleLogin: () => void;
 
-  error: string;
+  error: string | undefined;
   // setForgetPassword: (value: boolean) => void;
 }
 

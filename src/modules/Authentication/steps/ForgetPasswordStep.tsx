@@ -10,7 +10,7 @@ interface ForgetPasswordStepProps {
   setVerificationCode: (value: string) => void;
   handleNext: () => void;
   handleBack: () => void;
-  error: string;
+  error: string | undefined;
   seconds: number;
   sendVerificationCode: () => void;
 }
