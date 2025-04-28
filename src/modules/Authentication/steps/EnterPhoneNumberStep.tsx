@@ -34,7 +34,7 @@ interface PhoneNumberStepProps {
 }
 console.log("خزعبلات");
 const PhoneNumberStep: React.FC<PhoneNumberStepProps> = ({
-  Code,
+  // Code,
   setCountrycode,
   phoneNumber,
   setPhoneNumber,
@@ -83,6 +83,7 @@ const PhoneNumberStep: React.FC<PhoneNumberStepProps> = ({
                   if (newValue) {
                     setCountry(newValue);
                   }
+                  console.log(event);
                 }}
                 options={countries}
                 getOptionLabel={(option) =>

@@ -13,7 +13,7 @@ const useAuth = () => {
     usernameError: "",
   });
 
-  const { deleteToken, getToken, saveToken } = useAuthToken();
+  const { saveToken } = useAuthToken();
 
   const sendVerificationCode = async (
     phoneNumber: string,
@@ -79,8 +79,8 @@ const useAuth = () => {
 
   const login = async (
     phoneNumber: string,
-    password: string,
-    showSnackbar: Function
+    password: string
+    // showSnackbar: Function
   ) => {
     try {
       const response = await axios.post(API.postLogIn, {
@@ -200,6 +200,7 @@ const useAuth = () => {
     resendCodeTimer,
     login,
   };
+  console.log();
 };
 
 export default useAuth;

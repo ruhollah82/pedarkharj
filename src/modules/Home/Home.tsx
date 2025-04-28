@@ -27,7 +27,7 @@ function Home() {
     const fetchExpenses = async () => {
       try {
         const response = await axios.get<Expense[]>(
-          "http://localhost:8888/expenses"
+          "http://localhost:3000/expenses"
         );
         setExpenses(response.data);
       } catch (err) {

@@ -1,6 +1,6 @@
 // src/components/Signup/VerificationCodeStep.tsx
 import React from "react";
-import { Button, TextField, Box, Typography, Link } from "@mui/material";
+import { Button, TextField, Box, Typography } from "@mui/material";
 import Lottie from "lottie-react";
 import verificationAnim from "../../../assets/Images/verification.json";
 import styles from "../SignUp.module.css";

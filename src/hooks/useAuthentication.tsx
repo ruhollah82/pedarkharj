@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useAuth from "./useAuth";
-import { sleep, validatePhoneNumber } from "../utility/helpers";
+import { validatePhoneNumber } from "../utility/helpers";
 
 export const useAuthentication = () => {
   const {
@@ -96,7 +96,7 @@ export const useAuthentication = () => {
   };
 
   const handleLogin = async () => {
-    login(countryCode + phoneNumber, password, showSnackbar);
+    login(countryCode + phoneNumber, password);
   };
 
   const resendVerificationCode = async () => {

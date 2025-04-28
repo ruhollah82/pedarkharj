@@ -12,7 +12,7 @@ interface NotificationProps {
 
 const Notification: React.FC<NotificationProps> = ({ expense }) => {
   const [expanded, setExpanded] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [, setIsHovered] = useState(false);
 
   return (
     <Row

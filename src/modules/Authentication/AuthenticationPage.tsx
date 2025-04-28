@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Box, Typography, Slide } from "@mui/material";
 import styles from "./SignUp.module.css";
 import Container from "../../layouts/Container/Container";
