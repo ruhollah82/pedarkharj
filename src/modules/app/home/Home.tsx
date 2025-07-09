@@ -2,23 +2,15 @@ import { useEffect, useState } from "react";
 import styles from "./Home.module.css";
 import WalletBalance from "./Balance";
 import Display from "./Display";
-import Notification from "../../components/Notification/Notification";
+import Notification from "../../../components/Notification/Notification";
 import axios from "axios";
-import Container from "../../layouts/Container/Container";
+import Container from "../../../layouts/Container/Container";
 import { Icon } from "@iconify/react";
 import { Space, Spin } from "antd";
-
-interface Expense {
-  index: number;
-  date: string;
-  picture: string;
-  title: string;
-  amount: number;
-  description: string;
-}
+import Expense_Type from "../../../types/types/expense.type";
 
 function Home() {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [expenses, setExpenses] = useState<Expense_Type[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +18,7 @@ function Home() {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const response = await axios.get<Expense[]>(
+        const response = await axios.get<Expense_Type[]>(
           "https://my-json-server.typicode.com/ruhollah82/pedarkharj-dummy/expenses"
         );
         setExpenses(response.data);

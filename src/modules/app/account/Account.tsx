@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { useAuth } from "../../context/AuthContext"; // Import the AuthContext to access logout function
+import { useAuth } from "../../../context/AuthContext"; // Import the AuthContext to access logout function
 
 function Account() {
   const { logout } = useAuth(); // Destructure the logout function from useAuth

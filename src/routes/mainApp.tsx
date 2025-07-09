@@ -1,10 +1,10 @@
 import Layout from "../layouts/Layout/Layout";
 import { Navigate, Route, Routes } from "react-router-dom";
-import Home from "../modules/Home/Home";
-import Contacts from "../modules/Contacts/Contacts";
-import Account from "../modules/Account/Account";
-import Calculator from "../modules/Calculator/Calculator";
-import Search from "../modules/Search/Search";
+import Home from "../modules/app/home/Home";
+import Contacts from "../modules/app/contacts/Contacts";
+import Account from "../modules/app/account/Account";
+import Calculator from "../modules/app/calculator/Calculator";
+import Search from "../modules/app/search/Search";
 
 const MainApp = () => {
   return (

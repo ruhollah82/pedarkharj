@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Avatar, Typography, Space, Button, Row, Col } from "antd";
 import { Link } from "react-router-dom";
-import Expense from "../../types/interfaces/expense";
 import { Icon } from "@iconify/react";
+import expense_Type from "../../types/types/expense.type";
 
 const { Text, Paragraph } = Typography;
 
 interface NotificationProps {
-  expense: Expense;
+  expense: expense_Type;
 }
 
 const Notification: React.FC<NotificationProps> = ({ expense }) => {

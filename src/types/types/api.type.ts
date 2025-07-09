@@ -1,4 +1,4 @@
-interface api {
+type API_Type = {
   postLogOut: string;
   postLogOutAll: string;
   postCheckNumber: string;
@@ -8,6 +8,6 @@ interface api {
   postSignUp: string;
   postSendOTP: string;
   postVerifyOTP: string;
-}
+};
 
-export default api;
+export default API_Type;

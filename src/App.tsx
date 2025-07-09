@@ -1,12 +1,13 @@
 import theme from "./theme/theme";
 import { ThemeProvider } from "@mui/material/styles";
 import { Route, Routes, Navigate } from "react-router-dom";
-import Authentication from "./modules/Authentication/AuthenticationPage";
+import Authentication from "./modules/authentication/AuthenticationPage";
 import MainApp from "./routes/mainApp";
+import CustomSnackbar from "./components/common/CustomSnackbar";
 
 function App() {
   // const { isAuthenticated } = useAuth();
-  var isAuthenticated = true;
+  var isAuthenticated = false;
   return (
     <ThemeProvider theme={theme}>
       {isAuthenticated ? (
@@ -17,6 +18,7 @@ function App() {
           <Route path="*" element={<Navigate to="/Authentication" />} />
         </Routes>
       )}
+      <CustomSnackbar />
     </ThemeProvider>
   );
 }
