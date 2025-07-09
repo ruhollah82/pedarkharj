@@ -3,13 +3,13 @@ import { Box, Typography, Slide } from "@mui/material";
 import styles from "./SignUp.module.css";
 import Container from "../../layouts/Container/Container";
 import ProgresBar from "../../components/progresBar/progresBar";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../app/store/store";
 import { StepComponents } from "./StepManager";
-import { AppDispatch } from "../../app/store/store";
+// import { AppDispatch } from "../../app/store/store";
 
 const AuthenticationPage: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch<AppDispatch>();
   const { slideDirection, waiting } = useSelector(
     (state: RootState) => state.authFlow
   );

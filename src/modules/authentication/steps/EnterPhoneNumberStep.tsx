@@ -120,7 +120,7 @@ const PhoneNumberStep: React.FC<PhoneNumberStepProps> = ({
               <InputAdornment position="start" sx={{ mr: 1 }}>
                 <Autocomplete
                   value={country || undefined}
-                  onChange={(event, newValue) => {
+                  onChange={(_, newValue) => {
                     if (newValue) {
                       setCountry(newValue);
                     }
