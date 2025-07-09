@@ -14,7 +14,7 @@ const useAuth = () => {
   });
 
   const { saveToken } = useAuthToken();
-
+  // Access the authentication status from context
   const sendVerificationCode = async (
     phoneNumber: string,
     showSnackbar: Function

@@ -5,7 +5,7 @@ import Authentication from "./modules/Authentication/AuthenticationPage";
 import MainApp from "./routes/mainApp";
 
 function App() {
-  // const { isAuthenticated } = useAuth(); // Access the authentication status from context
+  // const { isAuthenticated } = useAuth();
   var isAuthenticated = true;
   return (
     <ThemeProvider theme={theme}>

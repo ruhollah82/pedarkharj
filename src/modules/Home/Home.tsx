@@ -27,7 +27,7 @@ function Home() {
     const fetchExpenses = async () => {
       try {
         const response = await axios.get<Expense[]>(
-          "http://localhost:3000/expenses"
+          "https://my-json-server.typicode.com/ruhollah82/pedarkharj-dummy/expenses"
         );
         setExpenses(response.data);
       } catch (err) {
