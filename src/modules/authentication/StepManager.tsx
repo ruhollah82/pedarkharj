@@ -5,12 +5,9 @@ import { AppDispatch, RootState } from "../../app/store/store";
 import {
   setStep,
   setDirection,
-  setPhoneNumber,
-  setCountryCode,
   setUsername,
   setPassword,
   setVerificationCode,
-  setPhoneError,
   setCodeError,
   setResendCodeTimer,
   setPasswordError,
@@ -29,7 +26,6 @@ import VerificationCodeStep from "./steps/VerificationCodeStep";
 import UserCredentialsStep from "./steps/UserCredentialsStep";
 import EnterPasswordStep from "./steps/EnterPasswordStep";
 import ForgetPasswordStep from "./steps/ForgetPasswordStep";
-import { checkNumber } from "../../app/store/slices/userSlice";
 
 export const StepComponents: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -148,38 +144,6 @@ export const StepComponents: React.FC = () => {
     }
   };
 
-  const handleSendOTP = async () => {
-    // Validate phone number
-    if (!phoneNumber || phoneNumber.length < 10) {
-      dispatch(setPhoneError("لطفاً شماره تلفن معتبر وارد کنید"));
-      return;
-    }
-
-    const fullNumber = countryCode + phoneNumber;
-    try {
-      const exists = await dispatch(checkNumber(fullNumber)).unwrap();
-      console.log(fullNumber);
-
-      if (exists) {
-        // Existing user - go to password step
-        dispatch(setStep(100));
-      } else {
-        // New user - send OTP and go to verification
-        await dispatch(sendOTP(fullNumber)).unwrap();
-        handleNext();
-      }
-    } catch (error: any) {
-      console.log(fullNumber);
-
-      dispatch(
-        showSnackbar({
-          message: error.message || "خطا در بررسی شماره تلفن",
-          severity: "error",
-        })
-      );
-    }
-  };
-
   const handleVerifyOTP = async (mode: "signup" | "reset_password") => {
     // Validate verification code
     if (!verificationCode || verificationCode.length !== 5) {
@@ -267,17 +231,7 @@ export const StepComponents: React.FC = () => {
   }, [resendCodeTimer, dispatch]);
 
   const stepComponents = {
-    0: (
-      <PhoneNumberStep
-        setCountrycode={(val) => dispatch(setCountryCode(val))}
-        countryCode={countryCode}
-        phoneNumber={phoneNumber}
-        setPhoneNumber={(val) => dispatch(setPhoneNumber(val))}
-        handleNext={handleSendOTP}
-        error={errors.phoneError}
-        isLoading={authState.loading} // Pass loading state from auth slice
-      />
-    ),
+    0: <PhoneNumberStep />,
     1: (
       <VerificationCodeStep
         verificationCode={verificationCode}

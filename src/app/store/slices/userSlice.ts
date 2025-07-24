@@ -2,20 +2,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import API from "../../../services/API/apiList";
-
-interface UserInfo {
-  id: string;
-  name: string;
-  number: string;
-  avatar?: string;
-}
-
-interface UserState {
-  info: UserInfo | null;
-  avatars: string[]; // List of available avatar URLs
-  loading: boolean;
-  error: string | null;
-}
+import { UserInfo, UserState } from "../../../types/types/user.type";
 
 const initialState: UserState = {
   info: null,
@@ -36,18 +23,6 @@ export const fetchUserInfo = createAsyncThunk(
       return response.data as UserInfo;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "User info fetch failed");
-    }
-  }
-);
-
-export const checkNumber = createAsyncThunk(
-  "user/checkNumber",
-  async (number: string, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(API.postCheckNumber, { number });
-      return response.data.exists as boolean;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Number check failed");
     }
   }
 );

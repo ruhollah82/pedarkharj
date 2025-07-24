@@ -1,201 +1,171 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
-  TextField,
-  Box,
+  Input,
   Typography,
-  Autocomplete,
-  InputAdornment,
-  CircularProgress,
-} from "@mui/material";
+  Form,
+  Alert,
+  Spin,
+  Flex,
+  FormProps,
+} from "antd";
 import Lottie from "lottie-react";
 import phoneNumberAnim from "../../../assets/Images/phoneNumber.json";
 import styles from "../SignUp.module.css";
-import COUNTRIES from "../../../data/countryList/countryList";
-import Country from "../../../types/types/country.type";
+import useAuthFlow from "../../../hooks/useAuthFlow";
+import { baseTokens } from "../../../theme/tokens";
+import { Icon } from "@iconify/react";
+import useAuth from "../../../hooks/useAuth";
+import { setWaiting } from "../../../app/store/slices/authFlowSlice";
+import useApp from "antd/es/app/useApp";
 
-// List of country codes and labels
-const countries = COUNTRIES;
+const { Text, Title } = Typography;
 
-function getCemoji(country: Country): string {
-  const code = country.code.toUpperCase(); // Ensure the code is uppercase
-  const emojiFlag = String.fromCodePoint(
-    ...Array.from(code).map((char) => 0x1f1e6 + char.charCodeAt(0) - 65)
-  );
-  return emojiFlag;
-}
+const PhoneNumberStep = () => {
+  const {
+    phoneNumber,
+    waiting,
+    errors,
+    setCountryCode,
+    setPhoneNumber,
+    setPhoneError,
+    clearPhoneError,
+    nextStep,
+    setDirection,
+    setStep,
+  } = useAuthFlow();
+  const { checkPhoneNumber } = useAuth();
 
-interface PhoneNumberStepProps {
-  setCountrycode: (value: string) => void;
-  countryCode: string;
-  phoneNumber: string;
-  setPhoneNumber: (value: string) => void;
-  handleNext: () => void;
-  error: string | undefined;
-  isLoading?: boolean;
-}
+  // Add this at the top or adjust as needed
+  interface FieldType {
+    phone: string;
+  }
+  const { message } = useApp();
 
-const PhoneNumberStep: React.FC<PhoneNumberStepProps> = ({
-  setCountrycode,
-  countryCode,
-  phoneNumber,
-  setPhoneNumber,
-  handleNext,
-  error,
-  isLoading = false,
-}) => {
-  const [country, setCountry] = useState<Country | null>(null);
-  const [isValid, setIsValid] = useState(true);
+  const handleSubmit: FormProps<FieldType>["onFinish"] = async (values) => {
+    if (!values.phone) return;
 
-  // Initialize country based on countryCode prop
-  useEffect(() => {
-    if (!country) {
-      const defaultCountry =
-        countries.find((c) => c.mobileCode === countryCode) || countries[0];
-      setCountry(defaultCountry);
-      setCountrycode(defaultCountry.mobileCode);
-    }
-  }, [countryCode, country, setCountrycode]);
+    try {
+      setWaiting(true);
+      clearPhoneError();
 
-  // Update country code when country changes
-  useEffect(() => {
-    if (country) {
-      setCountrycode(country.mobileCode);
-    }
-  }, [country, setCountrycode]);
+      const rawPhone = values.phone;
+      const formattedPhone = rawPhone.replace(/^0/, "+98");
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" && validatePhoneNumber()) {
-      handleNext();
-    }
-  };
+      // Save phone to context
+      setPhoneNumber(formattedPhone);
 
-  const validatePhoneNumber = (): boolean => {
-    // Simple validation - at least 7 digits
-    const isValidNumber = /^\d{7,}$/.test(phoneNumber);
-    setIsValid(isValidNumber);
-    return isValidNumber;
-  };
+      // Verify phone with backend
+      const res = await checkPhoneNumber({ number: phoneNumber });
+      if (res.isExist.status === 200) {
+        if (res.isExist.isExist === true) {
+          setStep(100);
+        } else if (res.isExist.isExist === false) {
+          nextStep();
+        }
+      }
 
-  const handleNextClick = () => {
-    if (validatePhoneNumber()) {
-      handleNext();
+      // Handle API response
+    } catch (error) {
+      setPhoneError("خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید");
+      console.error("Phone verification error:", error);
+    } finally {
+      setWaiting(false);
     }
   };
 
   return (
-    <Box className={styles.center}>
-      <Typography
-        variant="h6"
-        sx={{ direction: "rtl", mb: 2, fontWeight: "bold" }}
-      >
-        شماری ای که میخای باهاش ثبت نام کنی رو وارد کن
-      </Typography>
+    <Flex
+      justify="center"
+      align="center"
+      style={{ width: "100%", padding: 0 }}
+      className={styles.center}
+    >
+      <div style={{ width: "100%", padding: 0, textAlign: "center" }}>
+        <Spin spinning={waiting}>
+          <Title
+            level={3}
+            style={{ marginBottom: 24, color: baseTokens.token.texts5 }}
+          >
+            شماری ای که میخای باهاش ثبت نام کنی رو وارد کن
+          </Title>
 
-      <Lottie
-        animationData={phoneNumberAnim}
-        loop={false}
-        style={{ width: "50%", maxWidth: "300px" }}
-      />
+          <Lottie
+            animationData={phoneNumberAnim}
+            loop={false}
+            style={{ maxWidth: 300, margin: "0 auto 24px" }}
+          />
 
-      <Box sx={{ width: "100%", maxWidth: "400px", mt: 3 }}>
-        <TextField
-          fullWidth
-          label="شماره تلفن"
-          variant="outlined"
-          margin="normal"
-          value={phoneNumber}
-          onChange={(e) => {
-            // Allow only numbers
-            const value = e.target.value.replace(/\D/g, "");
-            setPhoneNumber(value);
-            setIsValid(true); // Reset validation on change
-          }}
-          onKeyDown={handleKeyDown}
-          error={!!error || !isValid}
-          helperText={error || (!isValid && "لطفاً شماره تلفن معتبر وارد کنید")}
-          placeholder="مثال: 9123456789"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start" sx={{ mr: 1 }}>
-                <Autocomplete
-                  value={country || undefined}
-                  onChange={(_, newValue) => {
-                    if (newValue) {
-                      setCountry(newValue);
-                    }
-                  }}
-                  options={countries}
-                  getOptionLabel={(option) =>
-                    `${getCemoji(option)} ${option.name} (${option.mobileCode})`
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      size="small"
-                      InputProps={{
-                        ...params.InputProps,
-                        sx: {
-                          fontSize: "0.75rem",
-                          minWidth: "140px",
-                        },
-                      }}
-                    />
-                  )}
-                  disableClearable
-                  sx={{ width: 180 }}
-                  renderOption={(props, option) => (
-                    <li
-                      {...props}
-                      style={{ direction: "ltr", textAlign: "right" }}
-                    >
-                      <span style={{ marginLeft: 8 }}>{getCemoji(option)}</span>
-                      {option.name} ({option.mobileCode})
-                    </li>
-                  )}
-                />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box>
+          <Form layout="vertical" onFinish={handleSubmit} size="large">
+            {errors.phoneError && (
+              <Alert
+                message={errors.phoneError}
+                type="error"
+                showIcon
+                closable
+                onClose={clearPhoneError}
+                style={{ marginBottom: 24 }}
+              />
+            )}
+            <Form.Item
+              name="phone"
+              label={
+                <span style={{ color: baseTokens.token.texts5 }}>
+                  شماره تلفن
+                </span>
+              }
+              rules={[
+                {
+                  required: true,
+                  message: "لطفا شماره تلفن خود را وارد کنید!",
+                },
+                {
+                  pattern: /^09\d{9}$/,
+                  message: "لطفا یک شماره تلفن معتبر ایرانی وارد کنید!",
+                },
+              ]}
+              style={{ color: baseTokens.token.texts4 }}
+            >
+              <Input
+                prefix={
+                  <Icon
+                    icon="ic:baseline-phone"
+                    style={{ color: baseTokens.token.texts4 }}
+                  />
+                }
+                placeholder="مثال: 09123456789"
+                value={phoneNumber}
+              />
+            </Form.Item>
 
-      <Box className={styles.handlebutton} sx={{ mt: 3 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleNextClick}
-          disabled={!phoneNumber || isLoading}
-          className={styles.button}
-          sx={{
-            minWidth: "120px",
-            height: "40px",
-          }}
-        >
-          {isLoading ? (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <span>در حال بررسی...</span>
-              <CircularProgress size={20} sx={{ ml: 1, color: "white" }} />
-            </Box>
-          ) : (
-            "بعدی"
-          )}
-        </Button>
-      </Box>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                size="large"
+                block
+                loading={waiting}
+                icon={<Icon icon="mdi:arrow-right" />}
+                style={{ height: 40 }}
+              >
+                {waiting ? "در حال بررسی..." : "بعدی"}
+              </Button>
+            </Form.Item>
+          </Form>
 
-      <Typography
-        variant="caption"
-        sx={{
-          mt: 2,
-          color: "text.secondary",
-          maxWidth: "400px",
-          textAlign: "center",
-        }}
-      >
-        با وارد کردن شماره تلفن خود، شرایط استفاده و حریم خصوصی را می‌پذیرید
-      </Typography>
-    </Box>
+          <Text
+            type="secondary"
+            style={{
+              display: "block",
+              marginTop: 24,
+              color: baseTokens.token.texts4,
+            }}
+          >
+            با وارد کردن شماره تلفن خود، شرایط استفاده و حریم خصوصی را می‌پذیرید
+          </Text>
+        </Spin>
+      </div>
+    </Flex>
   );
 };
 

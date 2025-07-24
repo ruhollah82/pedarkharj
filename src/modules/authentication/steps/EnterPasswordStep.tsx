@@ -1,191 +1,200 @@
 import React, { useState } from "react";
 import {
   Button,
-  TextField,
-  Box,
+  Input,
   Typography,
-  FormControlLabel,
   Checkbox,
-  LinearProgress,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+  Form,
+  Alert,
+  Spin,
+  Flex,
+  FormProps,
+} from "antd";
+import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 import Lottie from "lottie-react";
 import verificationAnim from "../../../assets/Images/verification.json";
 import styles from "../SignUp.module.css";
+import useAuthFlow from "../../../hooks/useAuthFlow";
+import useAuth from "../../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import Password from "antd/es/input/Password";
 
-interface EnterPasswordStepProps {
+const { Text, Title } = Typography;
+
+interface FieldType {
   password: string;
-  setPassword: (value: string) => void;
-  handleLogin: () => void;
-  handleBack: () => void;
-  handleForgotPassword: () => void;
-  error?: string;
-  isLoading?: boolean;
 }
 
-const EnterPasswordStep: React.FC<EnterPasswordStepProps> = ({
-  password,
-  setPassword,
-  handleLogin,
-  handleBack,
-  handleForgotPassword,
-  error,
-  isLoading = false,
-}) => {
+const EnterPasswordStep = () => {
+  const [form] = Form.useForm();
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" && password) {
-      handleLogin();
+  const {
+    phoneNumber,
+    countryCode,
+    waiting,
+    errors,
+    setPasswordError,
+    clearPasswordError,
+    prevStep,
+    setPassword,
+  } = useAuthFlow();
+
+  const { loginUser } = useAuth();
+
+  const handleSubmit: FormProps<FieldType>["onFinish"] = async (values) => {
+    if (!values.password) return;
+
+    try {
+      setIsLoading(true);
+      clearPasswordError();
+
+      // Save password to context if needed for signup flow
+      setPassword(values.password);
+
+      // Perform login
+      const loginSuccess = await loginUser({
+        number: countryCode + phoneNumber,
+        password: values.password,
+      });
+      console.log(
+        "number: ",
+        countryCode + phoneNumber,
+        "pass: ",
+        values.password
+      );
+      console.log(loginSuccess);
+
+      if (loginSuccess) {
+        // Redirect to dashboard on successful login
+        navigate("/dashboard");
+      } else {
+        setPasswordError("رمز عبور نامعتبر است");
+      }
+    } catch (error: any) {
+      setPasswordError(error.message || "خطا در ورود. لطفاً دوباره تلاش کنید.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const getPasswordStrength = () => {
-    if (password.length === 0) return 0;
-    if (password.length < 6) return 30;
-    if (password.length < 8) return 60;
-    if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) return 80;
-    return 100;
-  };
-
-  const getStrengthColor = () => {
-    const strength = getPasswordStrength();
-    if (strength < 30) return "#ff0000";
-    if (strength < 60) return "#ff9100";
-    if (strength < 80) return "#ffee00";
-    return "#00ff00";
+  const handleForgotPassword = () => {
+    // Implement forgot password flow
+    console.log("Forgot password clicked");
   };
 
   return (
-    <Box className={styles.center}>
-      <Typography sx={{ direction: "rtl", mb: 2 }}>
-        منتظرت بودیم! رمز عبورتو وارد کن تا وارد حسابت بشی ...
-      </Typography>
+    <Flex
+      justify="center"
+      align="center"
+      style={{ width: "100%", padding: 0 }}
+      className={styles.center}
+    >
+      <div style={{ width: "100%", padding: 0, textAlign: "center" }}>
+        <Spin spinning={waiting || isLoading}>
+          <Title level={3} style={{ marginBottom: 16 }}>
+            منتظرت بودیم! رمز عبورتو وارد کن تا وارد حسابت بشی ...
+          </Title>
 
-      <Lottie
-        animationData={verificationAnim}
-        loop={false}
-        style={{ width: "50%", maxWidth: "300px" }}
-      />
-
-      <TextField
-        fullWidth
-        label="رمز عبور"
-        variant="outlined"
-        margin="normal"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        onKeyDown={handleKeyDown}
-        error={!!error}
-        helperText={error}
-        sx={{ width: "20rem", mt: 3 }}
-        aria-label="Password input"
-        type={showPassword ? "text" : "password"}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={() => setShowPassword(!showPassword)}
-                edge="end"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-
-      {/* Password Strength Indicator */}
-      <Box sx={{ width: "20rem", mt: 1 }}>
-        <LinearProgress
-          variant="determinate"
-          value={getPasswordStrength()}
-          sx={{
-            height: 6,
-            borderRadius: 3,
-            backgroundColor: "#f0f0f0",
-            "& .MuiLinearProgress-bar": {
-              backgroundColor: getStrengthColor(),
-              borderRadius: 3,
-            },
-          }}
-        />
-        <Typography
-          variant="caption"
-          sx={{
-            display: "block",
-            textAlign: "right",
-            mt: 0.5,
-            color: getStrengthColor(),
-            fontWeight: "bold",
-          }}
-        >
-          {password.length > 0
-            ? `امنیت رمز عبور: ${getPasswordStrength()}%`
-            : ""}
-        </Typography>
-      </Box>
-
-      {/* Remember Me Checkbox */}
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
-            color="primary"
+          <Lottie
+            animationData={verificationAnim}
+            loop={false}
+            style={{ maxWidth: 300, margin: "0 auto 24px" }}
           />
-        }
-        label="مرا به خاطر بسپار"
-        sx={{
-          width: "20rem",
-          justifyContent: "flex-end",
-          mt: 1,
-        }}
-      />
 
-      <Button
-        onClick={handleForgotPassword}
-        sx={{ mt: 1, mb: 2, color: "primary.main" }}
-      >
-        رمز عبورمو فراموش کردم
-      </Button>
-
-      <Box className={styles.handlebutton} sx={{ mt: 2 }}>
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={handleBack}
-          className={styles.button}
-          sx={{ mr: 1 }}
-        >
-          قبلی
-        </Button>
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleLogin}
-          disabled={!password || isLoading}
-          className={styles.button}
-          sx={{ ml: 1 }}
-        >
-          {isLoading ? (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <span>در حال ورود...</span>
-              <Box sx={{ width: 24, height: 24, ml: 1 }}>
-                <div className={styles.spinner}></div>
-              </Box>
-            </Box>
-          ) : (
-            "ورود"
+          {errors.passwordError && (
+            <Alert
+              message={errors.passwordError}
+              type="error"
+              showIcon
+              style={{ marginBottom: 24 }}
+            />
           )}
-        </Button>
-      </Box>
-    </Box>
+
+          <Form<FieldType>
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            size="large"
+          >
+            <Form.Item<FieldType>
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "لطفاً رمز عبور خود را وارد کنید",
+                },
+                {
+                  min: 6,
+                  message: "رمز عبور باید حداقل ۶ کاراکتر باشد",
+                },
+              ]}
+            >
+              <Input.Password
+                placeholder="رمز عبور"
+                iconRender={(visible) =>
+                  visible ? (
+                    <EyeOutlined
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  ) : (
+                    <EyeInvisibleOutlined
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  )
+                }
+                visibilityToggle={{ visible: showPassword }}
+                style={{ width: "100%", maxWidth: 400, height: 45 }}
+              />
+            </Form.Item>
+
+            {/* Remember Me Checkbox */}
+            <Form.Item
+              style={{ textAlign: "right", maxWidth: 400, margin: "0 auto" }}
+            >
+              <Checkbox
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                style={{ direction: "rtl" }}
+              >
+                مرا به خاطر بسپار
+              </Checkbox>
+            </Form.Item>
+
+            <Button
+              type="link"
+              onClick={handleForgotPassword}
+              style={{ margin: "8px 0 24px" }}
+            >
+              رمز عبورمو فراموش کردم
+            </Button>
+
+            <Flex gap={16} justify="center">
+              <Button
+                type="default"
+                onClick={prevStep}
+                size="large"
+                style={{ minWidth: 100, height: 40 }}
+              >
+                قبلی
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={isLoading}
+                size="large"
+                style={{ minWidth: 100, height: 40 }}
+              >
+                {isLoading ? "در حال ورود..." : "ورود"}
+              </Button>
+            </Flex>
+          </Form>
+        </Spin>
+      </div>
+    </Flex>
   );
 };
 

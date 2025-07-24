@@ -32,3 +32,12 @@ export interface VerifyOTPData {
   token: string;
   mode: "signup" | "reset_password";
 }
+
+export interface CheckNumberResponse {
+  code: string;
+  isExist: boolean;
+  status: number;
+}
+export interface CheckNumberThunkResponse {
+  isExist: CheckNumberResponse;
+}

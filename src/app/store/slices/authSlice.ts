@@ -2,11 +2,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import API from "../../../services/API/apiList";
+import {
+  CheckNumberResponse,
+  CheckNumberThunkResponse,
+} from "../../../types/types/auth.type";
 
 interface AuthState {
   token: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
+  isNumberExist: CheckNumberResponse | null;
   otp: {
     sent: boolean;
     verified: boolean;
@@ -22,6 +27,7 @@ const initialState: AuthState = {
   token: localStorage.getItem("token") || null,
   refreshToken: localStorage.getItem("refreshToken") || null,
   isAuthenticated: !!localStorage.getItem("token"),
+  isNumberExist: null,
   otp: {
     sent: false,
     verified: false,
@@ -49,6 +55,19 @@ export const login = createAsyncThunk(
     }
   }
 );
+
+export const checkNumber = createAsyncThunk<
+  CheckNumberThunkResponse, // Return type
+  { number: string }, // Argument type
+  { rejectValue: string } // Rejection type (optional but recommended)
+>("auth/checkNumber", async (phoneNumber, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(API.postCheckNumber, phoneNumber);
+    return { isExist: response.data };
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data || "Check number failed");
+  }
+});
 
 export const signup = createAsyncThunk(
   "auth/signup",
@@ -208,6 +227,21 @@ const authSlice = createSlice({
         localStorage.setItem("refreshToken", action.payload.refreshToken);
       })
       .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Check Number
+      .addCase(checkNumber.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isNumberExist = null; // reset previous result
+      })
+      .addCase(checkNumber.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isNumberExist = action.payload.isExist;
+      })
+      .addCase(checkNumber.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

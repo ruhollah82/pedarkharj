@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { Button, TextField, Box, Typography } from "@mui/material";
+import React from "react";
+import { Button, Input, Typography, Row, Col, Form, Alert } from "antd";
 import Lottie from "lottie-react";
 import verificationAnim from "../../../assets/Images/verification.json";
 import styles from "../SignUp.module.css";
 import useCountdown from "../../../hooks/useCountdown";
+
+const { Text, Title } = Typography;
 
 interface ForgetPasswordStepProps {
   verificationCode: string;
@@ -24,67 +26,136 @@ const ForgetPasswordStep: React.FC<ForgetPasswordStepProps> = ({
   seconds,
   sendVerificationCode,
 }) => {
-  const [triggerCountdown, setTriggerCountdown] = useState(0);
+  const [triggerCountdown, setTriggerCountdown] = React.useState(0);
   const countDown = useCountdown(seconds, triggerCountdown);
+  const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleResendCode = () => {
     sendVerificationCode();
-    setTriggerCountdown((prev) => prev + 1); // Update to restart the countdown
+    setTriggerCountdown((prev) => prev + 1);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    // Check if the Enter key was pressed
-    if (event.key === "Enter") {
-      handleNext();
+  const handleSubmit = () => {
+    form
+      .validateFields()
+      .then(() => {
+        setIsLoading(true);
+        handleNext();
+      })
+      .catch(() => {
+        // Validation errors will be shown automatically
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && verificationCode) {
+      handleSubmit();
     }
   };
 
   return (
-    <Box className={styles.center}>
-      <Typography sx={{ direction: "rtl" }}>
-        برای راستی آزمایی، ما یک کد اعتبار سنجی به شماره تلفنت ارسال کردیم
-      </Typography>
-      <Lottie
-        animationData={verificationAnim}
-        loop={false}
-        style={{ width: "50%" }}
-      />
-      <TextField
-        fullWidth
-        label="کد اعتبار سنجی"
-        variant="outlined"
-        margin="normal"
-        value={verificationCode}
-        onChange={(e) => setVerificationCode(e.target.value)}
-        onKeyDown={handleKeyDown}
-        error={!!error}
-        helperText={error}
-        sx={{ width: "15rem" }}
-      />
-      <Button disabled={countDown !== "00:00"} onClick={handleResendCode}>
-        {`ارسال مجدد ${countDown !== "00:00" ? countDown : ""}`}
-      </Button>
-      <Box className={styles.handlebutton}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleBack}
-          className={styles.button}
+    <Row
+      justify="center"
+      align="middle"
+      className={styles.center}
+      style={{ minHeight: "100vh", padding: 16 }}
+    >
+      <Col xs={24} md={16} lg={12} xl={10} style={{ textAlign: "center" }}>
+        <Title level={3} style={{ marginBottom: 16 }}>
+          بازیابی رمز عبور
+        </Title>
+
+        <Text type="secondary" style={{ display: "block", marginBottom: 24 }}>
+          برای راستی‌آزمایی، ما یک کد اعتبارسنجی به شماره تلفنت ارسال کردیم
+        </Text>
+
+        <Lottie
+          animationData={verificationAnim}
+          loop={false}
+          style={{ maxWidth: 300, margin: "0 auto 24px" }}
+        />
+
+        {error && (
+          <Alert
+            message={error}
+            type="error"
+            showIcon
+            style={{ marginBottom: 24 }}
+          />
+        )}
+
+        <Form
+          form={form}
+          onFinish={handleSubmit}
+          layout="vertical"
+          size="large"
+          initialValues={{ verificationCode }}
         >
-          قبلی
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleNext}
-          type="submit"
-          disabled={!verificationCode}
-          className={styles.button}
-        >
-          بعدی
-        </Button>
-      </Box>
-    </Box>
+          <Form.Item
+            name="verificationCode"
+            rules={[
+              { required: true, message: "لطفاً کد تأیید را وارد کنید" },
+              {
+                pattern: /^\d{5,6}$/,
+                message: "کد تأیید باید ۵ یا ۶ رقم باشد",
+              },
+            ]}
+          >
+            <Input.OTP
+              length={6}
+              onChange={setVerificationCode}
+              onKeyDown={handleKeyDown}
+              value={verificationCode}
+              // inputType="numeric"
+              formatter={(str) => str.toUpperCase()}
+              autoFocus
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="link"
+              onClick={handleResendCode}
+              disabled={countDown !== "00:00"}
+              style={{ margin: "8px 0 24px" }}
+            >
+              {countDown !== "00:00"
+                ? `ارسال مجدد کد (${countDown})`
+                : "ارسال مجدد کد تأیید"}
+            </Button>
+          </Form.Item>
+
+          <Form.Item>
+            <Row gutter={16} justify="center">
+              <Col>
+                <Button
+                  type="default"
+                  onClick={handleBack}
+                  size="large"
+                  style={{ minWidth: 100, height: 40 }}
+                >
+                  قبلی
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={isLoading}
+                  size="large"
+                  disabled={!verificationCode}
+                  style={{ minWidth: 100, height: 40 }}
+                >
+                  {isLoading ? "در حال بررسی..." : "بعدی"}
+                </Button>
+              </Col>
+            </Row>
+          </Form.Item>
+        </Form>
+      </Col>
+    </Row>
   );
 };
 
