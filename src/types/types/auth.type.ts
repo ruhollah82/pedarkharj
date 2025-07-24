@@ -1,3 +1,5 @@
+import { AxiosResponse } from "axios";
+
 // src/types/auth.type.ts
 export interface AuthState {
   token: string | null;
@@ -40,4 +42,10 @@ export interface CheckNumberResponse {
 }
 export interface CheckNumberThunkResponse {
   isExist: CheckNumberResponse;
+}
+
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  fullResponse: AxiosResponse<any, any>;
 }
