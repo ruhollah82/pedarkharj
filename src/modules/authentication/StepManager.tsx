@@ -252,16 +252,7 @@ export const StepComponents: React.FC = () => {
         passwordError={errors.passwordError}
       />
     ),
-    100: (
-      <EnterPasswordStep
-        password={password}
-        setPassword={(val) => dispatch(setPassword(val))}
-        handleLogin={handleLogin}
-        handleBack={handleBack}
-        handleForgotPassword={() => dispatch(setStep(101))}
-        error={errors.passwordError}
-      />
-    ),
+    100: <EnterPasswordStep />,
     101: (
       <ForgetPasswordStep
         error={errors.codeError}
