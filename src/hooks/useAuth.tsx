@@ -17,6 +17,7 @@ import {
 } from "../app/store/slices/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { CheckNumberThunkResponse } from "../types/types/auth.type";
+import { clearAuthCookies } from "../utils/coockieHelper";
 
 const useAuth = () => {
   const dispatch = useAppDispatch();
@@ -73,11 +74,18 @@ const useAuth = () => {
     [dispatch]
   );
 
-  const logoutUser = useCallback(() => dispatch(logout()), [dispatch]);
-  const logoutAllSessions = useCallback(
-    () => dispatch(logoutAll()),
-    [dispatch]
-  );
+  const logoutUser = useCallback(() => {
+    dispatch(logout());
+    clearAuthCookies();
+    window.location.reload(); // Add this line to refresh the page
+  }, [dispatch]);
+
+  const logoutAllSessions = useCallback(() => {
+    dispatch(logoutAll());
+    clearAuthCookies();
+    window.location.reload(); // Add this line to refresh the page
+  }, [dispatch]);
+
   const clearAuthError = useCallback(() => dispatch(clearError()), [dispatch]);
   const clearOtpState = useCallback(() => dispatch(clearOTP()), [dispatch]);
 

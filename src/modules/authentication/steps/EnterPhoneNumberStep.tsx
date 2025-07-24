@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
   Button,
   Input,
@@ -26,7 +25,6 @@ const PhoneNumberStep = () => {
     phoneNumber,
     waiting,
     errors,
-    setCountryCode,
     setPhoneNumber,
     setPhoneError,
     clearPhoneError,

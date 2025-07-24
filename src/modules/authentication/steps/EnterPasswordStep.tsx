@@ -17,7 +17,8 @@ import styles from "../SignUp.module.css";
 import useAuthFlow from "../../../hooks/useAuthFlow";
 import useAuth from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import Password from "antd/es/input/Password";
+import { LoginResponse } from "../../../types/types/auth.type";
+import useApp from "antd/es/app/useApp";
 
 const { Text, Title } = Typography;
 
@@ -31,6 +32,7 @@ const EnterPasswordStep = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { message } = useApp();
 
   const {
     phoneNumber,
@@ -56,21 +58,16 @@ const EnterPasswordStep = () => {
       setPassword(values.password);
 
       // Perform login
-      const loginSuccess = await loginUser({
-        number: countryCode + phoneNumber,
+      const loginResponse: LoginResponse = await loginUser({
+        number: phoneNumber,
         password: values.password,
-      });
-      console.log(
-        "number: ",
-        countryCode + phoneNumber,
-        "pass: ",
-        values.password
-      );
-      console.log(loginSuccess);
+      }).unwrap();
+      console.log("number: ", phoneNumber, "pass: ", values.password);
+      console.log("passlog: ", loginResponse);
 
-      if (loginSuccess) {
-        // Redirect to dashboard on successful login
-        navigate("/dashboard");
+      if (loginResponse.fullResponse.data.status === 200) {
+        message.success("ورود موفق!");
+        navigate("/app");
       } else {
         setPasswordError("رمز عبور نامعتبر است");
       }
@@ -111,6 +108,7 @@ const EnterPasswordStep = () => {
               type="error"
               showIcon
               style={{ marginBottom: 24 }}
+              closable
             />
           )}
 
