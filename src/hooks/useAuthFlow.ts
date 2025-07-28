@@ -9,6 +9,7 @@ import {
   setCountryCode,
   setUsername,
   setPassword,
+  setTempToken,
   setVerificationCode,
   setResendCodeTimer,
   setPhoneError,
@@ -43,6 +44,9 @@ const useAuthFlow = () => {
   const password = useAppSelector(
     (state: RootState) => state.authFlow.password
   );
+  const tempToken = useAppSelector(
+    (state: RootState) => state.authFlow.tempToken
+  );
   const verificationCode = useAppSelector(
     (state: RootState) => state.authFlow.verificationCode
   );
@@ -75,6 +79,7 @@ const useAuthFlow = () => {
     countryCode,
     username,
     password,
+    tempToken,
     verificationCode,
     resendCodeTimer,
     errors,
@@ -89,6 +94,7 @@ const useAuthFlow = () => {
     setCountryCode: (code: string) => dispatch(setCountryCode(code)),
     setUsername: (name: string) => dispatch(setUsername(name)),
     setPassword: (pass: string) => dispatch(setPassword(pass)),
+    setTempToken: (token: string) => dispatch(setTempToken(token)),
     setVerificationCode: (code: string) => dispatch(setVerificationCode(code)),
     setResendCodeTimer: (seconds: number) =>
       dispatch(setResendCodeTimer(seconds)),

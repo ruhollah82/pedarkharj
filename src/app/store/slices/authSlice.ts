@@ -92,6 +92,8 @@ export const login = createAsyncThunk<
       return {
         accessToken: response.data.access,
         refreshToken: response.data.refresh,
+        status: response.data.status,
+        accessExpireSeconds: response.data.accessExpireSeconds,
         fullResponse: response,
       };
     } catch (error: any) {
@@ -145,9 +147,13 @@ export const signup = createAsyncThunk(
   ) => {
     try {
       const response = await axios.post(API.postSignUp, userData);
+      console.log("reducer log:", response);
       return {
-        accessToken: response.data.accessToken,
-        refreshToken: response.data.refreshToken,
+        accessToken: response.data.access,
+        refreshToken: response.data.refresh,
+        status: response.data.status,
+        accessExpireSeconds: response.data.accessExpireSeconds,
+        data: response.data,
       };
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "Signup failed");
@@ -266,11 +272,21 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        updateTokens(
-          state,
-          action.payload.accessToken,
-          action.payload.refreshToken
-        );
+        state.accessToken = action.payload.accessToken;
+        setAuthCookie("accessToken", action.payload.accessToken, {
+          expires: action.payload.accessExpireSeconds / 86400,
+        });
+        state.refreshToken = action.payload.refreshToken;
+        setAuthCookie("refreshToken", action.payload.refreshToken, {
+          expires: 30,
+        });
+        if (
+          action.payload.status === 200 &&
+          action.payload.accessToken !== undefined &&
+          action.payload.accessToken !== "undefined"
+        ) {
+          state.isAuthenticated = true;
+        }
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -300,10 +316,20 @@ const authSlice = createSlice({
       .addCase(signup.fulfilled, (state, action) => {
         state.loading = false;
         state.accessToken = action.payload.accessToken;
+        setAuthCookie("accessToken", action.payload.accessToken, {
+          expires: action.payload.accessExpireSeconds / 86400,
+        });
         state.refreshToken = action.payload.refreshToken;
-        state.isAuthenticated = true;
-        setAuthCookie("accessToken", action.payload.accessToken);
-        setAuthCookie("refreshToken", action.payload.refreshToken);
+        setAuthCookie("refreshToken", action.payload.refreshToken, {
+          expires: 30,
+        });
+        if (
+          action.payload.status === 200 &&
+          action.payload.accessToken !== undefined &&
+          action.payload.accessToken !== "undefined"
+        ) {
+          state.isAuthenticated = true;
+        }
       })
       .addCase(signup.rejected, (state, action) => {
         state.loading = false;

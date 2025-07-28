@@ -38,7 +38,6 @@ const PhoneNumberStep = () => {
   interface FieldType {
     phone: string;
   }
-  const { message } = useApp();
 
   const handleSubmit: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!values.phone) return;
@@ -54,7 +53,7 @@ const PhoneNumberStep = () => {
       setPhoneNumber(formattedPhone);
 
       // Verify phone with backend
-      const res = await checkPhoneNumber({ number: phoneNumber });
+      const res = await checkPhoneNumber({ number: formattedPhone });
       if (res.isExist.status === 200) {
         if (res.isExist.isExist === true) {
           setStep(100);

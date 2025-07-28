@@ -11,6 +11,7 @@ interface AuthFlowState {
   password: string;
   verificationCode: string;
   resendCodeTimer: number;
+  tempToken: string;
   errors: {
     phoneError: string;
     codeError: string;
@@ -29,6 +30,7 @@ const initialState: AuthFlowState = {
   password: "",
   verificationCode: "",
   resendCodeTimer: 0,
+  tempToken: "",
   errors: {
     phoneError: "",
     codeError: "",
@@ -64,6 +66,9 @@ const authFlowSlice = createSlice({
     setPassword: (state, action: PayloadAction<string>) => {
       state.password = action.payload;
       state.errors.passwordError = "";
+    },
+    setTempToken: (state, action: PayloadAction<string>) => {
+      state.tempToken = action.payload;
     },
     setVerificationCode: (state, action: PayloadAction<string>) => {
       state.verificationCode = action.payload;
@@ -101,6 +106,7 @@ export const {
   setCountryCode,
   setUsername,
   setPassword,
+  setTempToken,
   setVerificationCode,
   setResendCodeTimer,
   setPhoneError,

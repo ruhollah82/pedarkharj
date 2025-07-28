@@ -1,35 +1,71 @@
-import React from "react";
-import { Button, Input, Typography, Row, Col } from "antd";
+import React, { useState } from "react";
+import { Button, Input, Typography, Row, Col, Alert, Form } from "antd";
 import Lottie from "lottie-react";
 import userPasswordAnim from "../../../assets/Images/username.json";
 import styles from "../SignUp.module.css";
+import useAuthFlow from "../../../hooks/useAuthFlow";
+import useAuth from "../../../hooks/useAuth";
 
 const { Text } = Typography;
 
-interface UserCredentialsStepProps {
-  username: string;
-  setUsername: (value: string) => void;
-  password: string;
-  setPassword: (value: string) => void;
-  handleFinish: () => void;
-  usernameError?: string;
-  passwordError?: string;
-}
+const UserCredentialsStep = () => {
+  const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-const UserCredentialsStep: React.FC<UserCredentialsStepProps> = ({
-  username,
-  setUsername,
-  password,
-  setPassword,
-  handleFinish,
-  usernameError,
-  passwordError,
-}) => {
+  const {
+    username,
+    password,
+    setUsername,
+    setPassword,
+    nextStep,
+    prevStep,
+    clearErrors,
+    errors,
+    phoneNumber,
+    tempToken,
+  } = useAuthFlow();
+
+  const { signupUser } = useAuth();
+
   const invalidCharsPattern = /[!@#$%^&*()_\-+=\\|[\]{}"':;?\/><,.]/;
 
-  const isPasswordValid = password.length >= 8;
-  const isUsernameValid =
-    !invalidCharsPattern.test(username) && username.length > 2;
+  const handleFinish = async () => {
+    try {
+      setIsLoading(true);
+      setSubmitError(null);
+      clearErrors();
+
+      // Validate fields before submission
+      await form.validateFields();
+
+      // Call signup API
+      const signupResponse = await signupUser({
+        number: phoneNumber, // Will be populated from context
+        name: username,
+        token: tempToken, // Will be populated from context
+        password: password,
+      }).unwrap();
+
+      console.log(signupResponse);
+
+      // nextStep();
+    } catch (error: any) {
+      console.error("Signup error:", error);
+      setSubmitError(
+        error?.data?.message ||
+          error?.message ||
+          "خطا در ثبت نام. لطفاً دوباره تلاش کنید."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleBack = () => {
+    clearErrors();
+    prevStep();
+  };
 
   return (
     <div className={styles.center} style={{ textAlign: "center" }}>
@@ -43,73 +79,99 @@ const UserCredentialsStep: React.FC<UserCredentialsStepProps> = ({
         style={{ width: "50%", maxWidth: "300px", margin: "0 auto 24px" }}
       />
 
-      <Row
-        gutter={16}
-        justify="center"
-        style={{ maxWidth: 800, margin: "0 auto" }}
+      {submitError && (
+        <Alert
+          message={submitError}
+          type="error"
+          showIcon
+          style={{ marginBottom: 24 }}
+          closable
+          onClose={() => setSubmitError(null)}
+        />
+      )}
+
+      <Form
+        form={form}
+        onFinish={handleFinish}
+        initialValues={{ username, password }}
       >
-        <Col xs={24} md={12}>
-          <div style={{ textAlign: "right", marginBottom: 8 }}>
-            <Text>نام کاربری</Text>
-          </div>
-          <Input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="نام کاربری"
-            status={
-              usernameError || (!isUsernameValid && username !== "")
-                ? "error"
-                : ""
-            }
-            style={{ width: "100%" }}
-          />
-          {(usernameError || (!isUsernameValid && username !== "")) && (
-            <Text
-              type="danger"
-              style={{ display: "block", textAlign: "right", marginTop: 8 }}
-            >
-              {usernameError ||
-                "نام کاربری باید تنها شامل اعداد و حروف فارسی و انگلیسی و بیشتر از ۲ کرکتر باشد"}
-            </Text>
-          )}
-        </Col>
-
-        <Col xs={24} md={12}>
-          <div style={{ textAlign: "right", marginBottom: 8 }}>
-            <Text>رمز عبور</Text>
-          </div>
-          <Input.Password
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="رمز عبور"
-            status={
-              passwordError || (!isPasswordValid && password !== "")
-                ? "error"
-                : ""
-            }
-            style={{ width: "100%" }}
-          />
-          {(passwordError || (!isPasswordValid && password !== "")) && (
-            <Text
-              type="danger"
-              style={{ display: "block", textAlign: "right", marginTop: 8 }}
-            >
-              {passwordError || "رمز عبور باید حداقل شامل ۸ کرکتر باشد"}
-            </Text>
-          )}
-        </Col>
-      </Row>
-
-      <div style={{ marginTop: 32 }}>
-        <Button
-          type="primary"
-          onClick={handleFinish}
-          disabled={!isPasswordValid || !isUsernameValid}
-          style={{ minWidth: 120, height: 40 }}
+        <Row
+          gutter={16}
+          justify="center"
+          style={{ maxWidth: 800, margin: "0 auto" }}
         >
-          ثبت‌نام
-        </Button>
-      </div>
+          <Col xs={24} md={12}>
+            <Form.Item
+              name="username"
+              rules={[
+                { required: true, message: "لطفاً نام کاربری را وارد کنید" },
+                {
+                  pattern: /^[a-zA-Z0-9\u0600-\u06FF]{3,}$/,
+                  message:
+                    "نام کاربری باید حداقل ۳ حرف و فقط شامل حروف و اعداد باشد",
+                },
+                () => ({
+                  validator(_, value) {
+                    if (!value || !invalidCharsPattern.test(value)) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error("نام کاربری نمی‌تواند شامل کاراکترهای خاص باشد")
+                    );
+                  },
+                }),
+              ]}
+            >
+              <Input
+                placeholder="نام کاربری"
+                onChange={(e) => setUsername(e.target.value)}
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col xs={24} md={12}>
+            <Form.Item
+              name="password"
+              rules={[
+                { required: true, message: "لطفاً رمز عبور را وارد کنید" },
+                {
+                  min: 8,
+                  message: "رمز عبور باید حداقل ۸ کاراکتر باشد",
+                },
+                {
+                  pattern: /^(?=.*[a-zA-Z])(?=.*\d).+$/,
+                  message: "رمز عبور باید شامل حروف و اعداد باشد",
+                },
+              ]}
+            >
+              <Input.Password
+                placeholder="رمز عبور"
+                onChange={(e) => setPassword(e.target.value)}
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <div style={{ marginTop: 32 }}>
+          <Button
+            type="default"
+            onClick={handleBack}
+            style={{ marginRight: 16, minWidth: 100, height: 40 }}
+          >
+            قبلی
+          </Button>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={isLoading}
+            style={{ minWidth: 120, height: 40 }}
+          >
+            {isLoading ? "در حال ثبت‌نام..." : "ثبت‌نام"}
+          </Button>
+        </div>
+      </Form>
     </div>
   );
 };

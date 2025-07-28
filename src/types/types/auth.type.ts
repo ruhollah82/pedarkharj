@@ -48,4 +48,6 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   fullResponse: AxiosResponse<any, any>;
+  status: number;
+  accessExpireSeconds: number;
 }

@@ -36,13 +36,14 @@ const EnterPasswordStep = () => {
 
   const {
     phoneNumber,
-    countryCode,
     waiting,
     errors,
     setPasswordError,
     clearPasswordError,
-    prevStep,
     setPassword,
+    nextStep,
+    setStep,
+    setDirection,
   } = useAuthFlow();
 
   const { loginUser } = useAuth();
@@ -79,8 +80,12 @@ const EnterPasswordStep = () => {
   };
 
   const handleForgotPassword = () => {
-    // Implement forgot password flow
-    console.log("Forgot password clicked");
+    nextStep();
+  };
+  const handleBack = () => {
+    setStep(0);
+    setDirection("right");
+    console.log("back");
   };
 
   return (
@@ -173,7 +178,7 @@ const EnterPasswordStep = () => {
             <Flex gap={16} justify="center">
               <Button
                 type="default"
-                onClick={prevStep}
+                onClick={handleBack}
                 size="large"
                 style={{ minWidth: 100, height: 40 }}
               >
