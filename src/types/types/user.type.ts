@@ -1,4 +1,3 @@
-// src/store/slices/userSliceTypes.ts
 export interface UserInfo {
   id: string;
   name: string;
@@ -8,7 +7,7 @@ export interface UserInfo {
 
 export interface UserState {
   info: UserInfo | null;
-  avatars: string[]; // List of available avatar URLs
+  avatars: string[];
   loading: boolean;
   error: string | null;
 }

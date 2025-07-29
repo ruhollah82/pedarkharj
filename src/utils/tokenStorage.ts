@@ -1,5 +1,3 @@
-// src/utils/tokenStorage.ts
-
 export const saveToken = (
   name: string,
   value: string,

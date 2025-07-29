@@ -32,7 +32,9 @@ export const fetchAvatars = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(API.getAvatars);
-      return response.data as string[];
+      console.log("Full API response:", response.data);
+      console.log("Avatars array:", response.data.data);
+      return response.data.data as string[];
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "Avatars fetch failed");
     }
@@ -89,7 +91,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchAvatars.fulfilled, (state, action) => {
         state.loading = false;
-        state.avatars = action.payload;
+        state.avatars = action.payload; // This should be the array of avatar URLs
       })
       .addCase(fetchAvatars.rejected, (state, action) => {
         state.loading = false;

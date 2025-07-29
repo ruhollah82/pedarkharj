@@ -58,3 +58,81 @@
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
+
+.welcomeOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.welcomeCard {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.avatarContainer {
+  border-radius: 50%;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.avatarContainer:hover {
+  transform: scale(1.05);
+}
+
+.avatarImage {
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 16px;
+}
+
+.loadingText {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .avatarContainer {
+    width: 80px;
+    height: 80px;
+  }
+
+  .welcomeCard {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .avatarContainer {
+    width: 60px;
+    height: 60px;
+  }
+
+  .welcomeCard h3 {
+    font-size: 1.2rem;
+  }
+}

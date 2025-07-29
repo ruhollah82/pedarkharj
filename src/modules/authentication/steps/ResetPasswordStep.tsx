@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Input, Form, Typography, Row, Col, Alert, Flex } from "antd";
 import Lottie from "lottie-react";
-import passwordResetAnim from "../../../assets/Images/verification.json"; // You'll need to add this animation
+import passwordResetAnim from "../../../assets/Images/Change Passwords.json"; // You'll need to add this animation
 import styles from "../SignUp.module.css";
 import useAuthFlow from "../../../hooks/useAuthFlow";
 import useAuth from "../../../hooks/useAuth";
@@ -47,7 +47,7 @@ const ResetPasswordStep = () => {
         password: values.newPassword,
       }).unwrap();
 
-      console.log("✅ reset pass response:", resetResponse);
+      console.log("reset pass response:", resetResponse);
 
       // Check for success (based on your structure)
       if (resetResponse?.success === true) {
@@ -62,7 +62,7 @@ const ResetPasswordStep = () => {
           password: values.newPassword,
         }).unwrap();
 
-        console.log("✅ login after reset:", loginResponse);
+        console.log("login after reset:", loginResponse);
 
         if (loginResponse?.fullResponse?.data?.status === 200) {
           message.success("ورود موفق!");
@@ -112,7 +112,7 @@ const ResetPasswordStep = () => {
 
         <Lottie
           animationData={passwordResetAnim}
-          loop={false}
+          // loop={true}
           style={{ maxWidth: 300, margin: "0 auto 24px" }}
         />
 

@@ -5,6 +5,7 @@ import userPasswordAnim from "../../../assets/Images/username.json";
 import styles from "../SignUp.module.css";
 import useAuthFlow from "../../../hooks/useAuthFlow";
 import useAuth from "../../../hooks/useAuth";
+import Cookies from "js-cookie";
 
 const { Text } = Typography;
 
@@ -36,20 +37,23 @@ const UserCredentialsStep = () => {
       setSubmitError(null);
       clearErrors();
 
-      // Validate fields before submission
       await form.validateFields();
 
-      // Call signup API
       const signupResponse = await signupUser({
-        number: phoneNumber, // Will be populated from context
+        number: phoneNumber,
         name: username,
-        token: tempToken, // Will be populated from context
+        token: tempToken,
         password: password,
       }).unwrap();
 
       console.log(signupResponse);
 
-      // nextStep();
+      Cookies.set("first_login", "true", {
+        expires: 7, // Give them 7 days to complete
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      });
+
     } catch (error: any) {
       console.error("Signup error:", error);
       setSubmitError(

@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Input, Form, Typography, Row, Col, Alert, Flex } from "antd";
 import Lottie from "lottie-react";
-import verificationAnim from "../../../assets/Images/verification.json";
+import verificationAnim from "../../../assets/Images/Verify Phone Number.json";
 import styles from "../SignUp.module.css";
 import useCountdown from "../../../hooks/useCountdown";
 import useAuthFlow from "../../../hooks/useAuthFlow";
 import useAuth from "../../../hooks/useAuth";
-import { token } from "stylis";
 
 const { Text, Title } = Typography;
 
@@ -18,7 +17,6 @@ const VerificationCodeStep = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const hasSentRef = useRef(false);
-  const countdownRef = useRef<HTMLSpanElement>(null);
 
   const {
     phoneNumber,

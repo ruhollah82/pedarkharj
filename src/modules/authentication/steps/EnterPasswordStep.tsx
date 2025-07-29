@@ -12,7 +12,7 @@ import {
 } from "antd";
 import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 import Lottie from "lottie-react";
-import verificationAnim from "../../../assets/Images/verification.json";
+import verificationAnim from "../../../assets/Images/User Exist.json";
 import styles from "../SignUp.module.css";
 import useAuthFlow from "../../../hooks/useAuthFlow";
 import useAuth from "../../../hooks/useAuth";

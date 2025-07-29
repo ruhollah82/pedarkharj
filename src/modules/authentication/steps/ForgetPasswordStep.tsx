@@ -52,7 +52,6 @@ const ForgetPasswordStep = () => {
     }
   };
 
-  // ADDED THE MISSING FUNCTION
   const handleResendCode = () => {
     sendVerificationCode();
   };

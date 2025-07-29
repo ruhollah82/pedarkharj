@@ -15,7 +15,6 @@ const MainApp = () => {
         <Route path="/app/account" element={<Account />} />
         <Route path="/app/calculator" element={<Calculator />} />
         <Route path="/app/search" element={<Search />} />
-        {/* Add a catch-all route for unknown URLs */}
         <Route path="*" element={<Navigate to="/app/home" />} />
       </Routes>
     </Layout>

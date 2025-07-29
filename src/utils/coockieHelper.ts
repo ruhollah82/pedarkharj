@@ -1,7 +1,5 @@
-// src/utils/cookieHelpers.ts
 import Cookies from "js-cookie";
 
-// Set a cookie with security options
 export const setAuthCookie = (
   name: string,
   value: string,

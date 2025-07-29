@@ -8,7 +8,6 @@ import { useAppSelector } from "./app/store/hooks";
 import { RootState } from "./app/store/store";
 
 function App() {
-  // const { isAuthenticated } = useAuth();
   const isAuthenticated = useAppSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
